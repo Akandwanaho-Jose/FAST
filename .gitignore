@@ -1,0 +1,48 @@
+# Local environment and secrets
+/.env
+/.env.*
+!/.env.example
+
+# PHP dependencies and test output
+/vendor/
+/.phpunit.cache/
+/.phpunit.result.cache
+/coverage/
+
+# Runtime data
+/storage/cache/**
+!/storage/cache/login/
+!/storage/cache/login/.gitignore
+/storage/logs/*.log
+!/storage/logs/.gitignore
+
+# Generated handbook extraction/review artifacts
+/storage/handbook-curriculum.json
+/storage/handbook-image-review/
+/storage/handbook-render/
+/storage/handbook-staff-contact-sheet.png
+
+# User-generated uploads (placeholder rules also live in this directory)
+/public/uploads/**
+!/public/uploads/.gitignore
+!/public/uploads/.htaccess
+
+# Editor and operating-system files
+/.idea/
+/.vscode/
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~
+
+# Temporary, backup, and language cache files
+*.bak
+*.log
+*.tmp
+*.temp
+*.orig
+*.py[cod]
+__pycache__/
+.pytest_cache/

@@ -1,0 +1,7 @@
+Options -Indexes
+
+RewriteEngine On
+RewriteRule ^$ /fast/public/ [R=302,L]
+RewriteRule ^\. - [F,L]
+RewriteRule ^(?:app|bin|bootstrap|config|docs|routes|storage|tests|vendor)(?:/|$) - [F,L,NC]
+RewriteRule ^(?:composer\.(?:json|lock)|README\.md)$ - [F,L,NC]

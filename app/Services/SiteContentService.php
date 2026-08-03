@@ -1,0 +1,22 @@
+<?php
+
+declare(strict_types=1);
+
+namespace FastWebsite\Services;
+
+use FastWebsite\Core\HttpException;
+use FastWebsite\Repositories\SiteContentRepository;
+
+final class SiteContentService
+{
+    public function __construct(private readonly SiteContentRepository $repository,private readonly AuthorizationService $authorization,private readonly AuditService $audit){}
+    /** @param array<string,mixed> $data */public function saveNews(?int$id,array$data,?int$department,int$user,bool$publish,string$ip,string$agent):int{$this->need($user,$id===null?'news.create':'news.edit');if(!$this->repository->canDepartment($user,$department))throw new HttpException(403,'News item is outside your scope.');if($publish)$this->newsPublisher($user);$creating=$id===null;$id=$this->repository->saveNews($id,$data,$department);if($publish)$this->repository->newsStatus($id,'published');$this->audit->record($user,$creating?'news.created':'news.updated','news',$id,$ip,$agent);return$id;}
+    public function newsStatus(int$id,string$action,int$user,string$ip,string$agent):string{if($this->repository->findNews($id,$user)===null)throw new HttpException(404,'News item not found.');$target=$this->target($action);$target==='published'?$this->newsPublisher($user):$this->need($user,'news.edit');$this->repository->newsStatus($id,$target);$this->audit->record($user,'news.'.$target,'news',$id,$ip,$agent);return$target;}
+    /** @param array<string,mixed> $data */public function saveEvent(?int$id,array$data,?int$department,int$user,bool$publish,string$ip,string$agent):int{$this->need($user,'events.manage');if(!$this->repository->canDepartment($user,$department))throw new HttpException(403,'Event is outside your scope.');$creating=$id===null;$id=$this->repository->saveEvent($id,$data,$department);if($publish)$this->repository->eventStatus($id,'published');$this->audit->record($user,$creating?'event.created':'event.updated','event',$id,$ip,$agent);return$id;}
+    public function eventStatus(int$id,string$action,int$user,string$ip,string$agent):string{if($this->repository->findEvent($id,$user)===null)throw new HttpException(404,'Event not found.');$this->need($user,'events.manage');$target=$this->target($action);$this->repository->eventStatus($id,$target);$this->audit->record($user,'event.'.$target,'event',$id,$ip,$agent);return$target;}
+    /** @param array<string,mixed> $data */public function savePage(?int$id,array$data,int$user,bool$publish,string$ip,string$agent):int{$this->need($user,'pages.manage');$creating=$id===null;$id=$this->repository->savePage($id,$data);if($publish)$this->repository->pageStatus($id,'published');$this->audit->record($user,$creating?'page.created':'page.updated','page',$id,$ip,$agent);return$id;}
+    public function pageStatus(int$id,string$action,int$user,string$ip,string$agent):string{$this->need($user,'pages.manage');if($this->repository->findPage($id)===null)throw new HttpException(404,'Page not found.');$target=$this->target($action);$this->repository->pageStatus($id,$target);$this->audit->record($user,'page.'.$target,'page',$id,$ip,$agent);return$target;}
+    /** @param array<string,mixed> $data */public function saveAnnouncement(?int$id,array$data,int$user,bool$publish,string$ip,string$agent):int{$this->need($user,'pages.manage');$creating=$id===null;$id=$this->repository->saveAnnouncement($id,$data);if($publish)$this->repository->announcementStatus($id,'published');$this->audit->record($user,$creating?'announcement.created':'announcement.updated','announcement',$id,$ip,$agent);return$id;}
+    public function announcementStatus(int$id,string$action,int$user,string$ip,string$agent):string{$this->need($user,'pages.manage');if($this->repository->findAnnouncement($id)===null)throw new HttpException(404,'Announcement not found.');$target=$this->target($action);$this->repository->announcementStatus($id,$target);$this->audit->record($user,'announcement.'.$target,'announcement',$id,$ip,$agent);return$target;}
+    private function target(string$a):string{return match($a){'publish'=>'published','archive'=>'archived','restore'=>'draft',default=>throw new HttpException(422,'Choose a valid workflow action.')};}private function newsPublisher(int$u):void{$this->need($u,'news.publish');$this->need($u,'content.approve');}private function need(int$u,string$p):void{if(!$this->authorization->can($u,$p))throw new HttpException(403,'This content action is not allowed.');}
+}

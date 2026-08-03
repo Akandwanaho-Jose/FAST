@@ -1,0 +1,47 @@
+department_slug,honorific_title,first_name,middle_name,last_name,position_code,title_override,staff_category,institutional_email,alternative_email,office_room,source_note
+biomedical-engineering,Eng. Dr.,Johnes,,Obungoloch,dean,Dean / Senior Lecturer,academic,jobungoloch@must.ac.ug,,TF07,Also listed under Biomedical Engineering
+mechanical-engineering,Eng. Dr.,Denis,,Bbosa,deputy_dean,Deputy Dean / Senior Lecturer,academic,dbbosa@must.ac.ug,,,Also listed under Mechanical Engineering
+electrical-and-electronics-engineering,Ms.,Addah,,Kyarisiima,head_of_department,Head of Department,academic,akyarisiima@must.ac.ug,,TF01,
+electrical-and-electronics-engineering,Mr.,John,,Ziine,assistant_lecturer,,academic,ziinej@must.ac.ug,,SF04,
+electrical-and-electronics-engineering,Mr.,Vincent,,Rutagangibwa,assistant_lecturer,,academic,rutagangis@must.ac.ug,,SF02,
+electrical-and-electronics-engineering,Mr.,Phaisal,,Lubega,assistant_lecturer,,academic,phaisal.lubega@must.ac.ug,,SF05,
+electrical-and-electronics-engineering,Mr.,Martin,,Galiwango,assistant_lecturer,,academic,mgaliwango@must.ac.ug,,SF10,
+electrical-and-electronics-engineering,Mr.,Joshua,Tendo,Kayenga,assistant_lecturer,,academic,,kayengatendojoshua4991@gmail.com,,Personal email supplied in handbook
+electrical-and-electronics-engineering,Mr.,John,,Bashabe,assistant_lecturer,,academic,,johnbashabe123@gmail.com,,Personal email supplied in handbook
+electrical-and-electronics-engineering,Ms.,Zainah,,Kalyankolo,assistant_lecturer,,academic,zkalyankolo@must.ac.ug,,SF13,
+electrical-and-electronics-engineering,Ms.,Irene,,Magara,assistant_lecturer,,academic,imagara@must.ac.ug,,SF06,
+electrical-and-electronics-engineering,Mr.,Joseph,,Wandera,laboratory_technician,,technical,jwandera@must.ac.ug,,,
+electrical-and-electronics-engineering,Dr.,Eze,Valentine Hyginus,Edoka,lecturer,,academic,,ezehyginusudoka@gmail.com,,Personal email supplied in handbook
+electrical-and-electronics-engineering,Mr.,Robert,,Asiimwe,assistant_lecturer,,academic,rasiimwe@must.ac.ug,,Second floor - Office 6,
+electrical-and-electronics-engineering,Mr.,Mackenzie,,Tuhirirwe,assistant_lecturer,,academic,tmackenzie@must.ac.ug,,,
+electrical-and-electronics-engineering,Mr.,Julius,,Taremwa,assistant_lecturer,,academic,jtaremwa@must.ac.ug,,SF14,
+biomedical-engineering,Dr.,Wasswa,,William,head_of_department,Head of Department / Senior Lecturer,academic,wwasswa@must.ac.ug,,,Matches the existing published profile; handbook uses both name orders
+biomedical-engineering,Dr.,Martha,,Mulerwa,lecturer,,academic,mmulerwa@must.ac.ug,,,Name order normalized from handbook listing and email
+biomedical-engineering,Mr.,Felix,,Atuhaire,assistant_lecturer,,academic,fatuhaire@must.ac.ug,,,
+biomedical-engineering,Mr.,Vicent,,Kasambula,assistant_lecturer,,academic,vkasambula@must.ac.ug,,,Name retained as printed in handbook
+biomedical-engineering,,Eugene,,Bizimana,assistant_lecturer,Part-time Assistant Lecturer,visiting,ebizimana@must.ac.ug,,,Name order normalized from handbook listing and email
+civil-engineering,Ms.,Josephine,,Najjobyo,head_of_department,Head of Department / Assistant Lecturer,academic,jnajjobyo@must.ac.ug,,,
+civil-engineering,Ms.,Joyce,Gumoshabe,Kayanja,assistant_lecturer,,academic,jgumoshabe@must.ac.ug,,,
+civil-engineering,Mr.,Ivan,,Kusiima,laboratory_technician,Senior Technician,technical,vkusiima@must.ac.ug,,,Name order normalized from handbook listing
+civil-engineering,Dr.,Lawrence,,Alongu,lecturer,,academic,lalongu@must.ac.ug,,,
+civil-engineering,Mr.,Hosea,,Mutanda,assistant_lecturer,,academic,,,,Name order normalized from handbook listing and email; handbook email hmutanda@must.a.cug appears malformed and is withheld for review
+civil-engineering,Mr.,Paul,,Tiboti,lecturer,Part-time Lecturer,visiting,ptiboti@must.ac.ug,,,
+civil-engineering,Mr.,Pathias,,Ndyabijuka,lecturer,Part-time Lecturer,visiting,pndyabijuka@must.ac.ug,,,
+mechanical-engineering,Ms.,Faith,,Natukunda,head_of_department,Head of Department / Assistant Lecturer,academic,fnatukunda@must.ac.ug,,,
+mechanical-engineering,Dr.,Theodora,Twongyirwe,Mondo,senior_lecturer,,academic,tmtwongyirwe@must.ac.ug,,,
+mechanical-engineering,Mr.,Benedicto,,Bukyana,laboratory_technician,,technical,bbukyana@must.ac.ug,,,
+mechanical-engineering,Mr.,Dennis,,Igambi,assistant_lecturer,,academic,digambi@must.ac.ug,,,
+petroleum-engineering-and-environmental-management,Mr.,Fortunate,,Ogene,head_of_department,Head of Department / Assistant Lecturer,academic,fogene@must.ac.ug,,,Name order confirmed by the department message
+petroleum-engineering-and-environmental-management,Mr.,Patrick,,Kabanda,assistant_lecturer,,academic,pkabanda@must.ac.ug,,SF12,Name order normalized from handbook listing and email
+petroleum-engineering-and-environmental-management,Mr.,Silagi,,Wanambwa,assistant_lecturer,,academic,swanambwa@must.ac.ug,,,Name order normalized from handbook listing and email
+petroleum-engineering-and-environmental-management,Dr.,Farad,,Sagala,senior_lecturer,,academic,fsagala@must.ac.ug,,,
+petroleum-engineering-and-environmental-management,Mr.,Rodney,,Lubega,assistant_lecturer,,academic,rlubega@must.ac.ug,,,
+petroleum-engineering-and-environmental-management,Dr.,Simon,,Echegu,associate_professor,,academic,sechegu@must.ac.ug,,,
+petroleum-engineering-and-environmental-management,Mr.,Tito,,Alazewa,laboratory_technician,,technical,talazewa@must.ac.ug,,,Record recovered while mapping the portrait table
+petroleum-engineering-and-environmental-management,Mr.,Amos,,Senyonjo,assistant_lecturer,Part-time Assistant Lecturer,visiting,asenyonjo@must.ac.ug,,,Name order normalized from handbook listing and email
+,Mr.,Dennis,Thomas,Lukaaya,administrative_assistant,Senior Administrative Assistant,administrative,dlukaaya@must.ac.ug,,TFO8,Room retained as printed in handbook
+,Mr.,Peter,Jovan,Nsubuga,administrative_assistant,Finance Officer,administrative,pnsubuga@must.ac.ug,,TF03,
+,Ms.,Gaudy,,Mpabasi,administrative_assistant,Faculty Secretary,administrative,gmpabaisi@must.ac.ug,,TF06,
+,Mr.,Maurice,,Muhirwe,administrative_assistant,Office Attendant,support,mmuhirwe@must.ac.ug,,,
+,Mr.,Joseph,,Akandwanaho,administrative_assistant,Office Attendant,support,jakandwanaho@must.ac.ug,,,Name order normalized from handbook listing and email
+,Ms.,Phionah,,Nabimanya,administrative_assistant,Office Attendant,support,pnabimanya@must.ac.ug,,,

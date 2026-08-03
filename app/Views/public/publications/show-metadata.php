@@ -1,0 +1,2 @@
+<?php declare(strict_types=1); use FastWebsite\Core\View; require __DIR__ . '/show.php'; ?>
+<?php if ($themes !== []): ?><section class="section research-metadata-section"><div class="shell"><div class="section-heading"><p class="eyebrow">Research discovery</p><h2>Research themes</h2></div><div class="metadata-chip-grid"><?php foreach ($themes as $theme): ?><span class="metadata-chip"><?=View::escape($theme['name'])?></span><?php endforeach; ?></div></div></section><?php endif; ?>

@@ -1,0 +1,295 @@
+programme_slug,version_name,course_code,course_title,study_year,semester,requirement_type,contact_hours,credit_units,display_order,source_block,source_note
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BCE1121,Engineering Mathematics I,1,1,elective,60,4,1,485,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,EEE1101,Electricity and Magnetism,1,1,elective,45,3,2,485,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BCE1103,Information Communication Technology,1,1,elective,45,3,3,485,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,COM1101,Communication Skills,1,1,elective,45,3,4,485,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,EEE1105,Physical Electronics,1,1,elective,45,3,5,485,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME1104,Engineering Physics,1,1,elective,45,3,6,485,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,DVS1106,Introduction to Political Economy,1,1,elective,45,3,7,485,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BCE1211,Engineering Mathematics II,1,2,elective,60,4,1,485,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BCE1221,Fundamentals of Computer Programming-C,1,2,elective,60,4,2,485,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME1203,Biochemistry & Microbiology,1,2,elective,45,3,3,485,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME1205,Engineering Mechanics,1,2,elective,60,4,4,485,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME1210,Thermodynamics,1,2,elective,60,4,5,485,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME1202,Engineering Drawing,1,2,elective,60,4,6,485,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,DVS1203,Political Economy of Africa & Development,1,2,elective,45,3,7,485,Conflicting handbook definitions: Political Economy of Africa & Development (3 CU) | Political Economy of Africa and Development (3 CU)
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BCE2111,Engineering Mathematics III,2,1,elective,60,4,1,488,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME2104,Human Anatomy & Physiology,2,1,elective,60,4,2,488,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,EEE2112,Control & Instrumentation,2,1,elective,60,4,3,488,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,EEE2102,Electronic Circuits,2,1,elective,60,4,4,488,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME2105,Biomaterials & Biocompatibility,2,1,elective,60,4,5,488,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME2111,BME Workshop Practice I,2,1,elective,60,4,6,488,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,DVS2104,Developmental Studies III,2,1,elective,45,3,7,488,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BCE2215,Engineering Mathematics IV,2,2,elective,60,4,1,488,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BCE2221,Object Oriented Programming – Python,2,2,elective,60,4,2,488,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME2210,Digital Electronics & Logic Design,2,2,elective,45,3,3,488,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME2205,Fundamentals of Biomechanics,2,2,elective,45,3,4,488,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME2211,Computer-Aided Design (CAD),2,2,elective,60,4,5,488,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME2212,BME Workshop Practice II,2,2,elective,60,4,6,488,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,DVS2205,Development Studies IV,2,2,elective,45,3,7,488,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME2301,BME Internship Training I,2,3,core,60,4,1,490,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,MIE3104,Theory of Machines,3,1,elective,60,4,1,493,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME3113,Biosensing & Measurements,3,1,elective,60,4,2,493,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BCE3123,Signals and Systems,3,1,elective,45,3,3,493,Conflicting handbook definitions: Internet of Things (IoT) (3 CU) | Signals and Systems (3 CU)
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,MIE3101,Product Design and Development,3,1,elective,60,4,4,493,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME3111,BME Workshop Practice III,3,1,elective,60,4,5,493,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME3112,Neuroscience & Neural Networks,3,1,elective,45,3,6,493,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME3110,Bioteletry & Telemedicine,3,1,elective,45,3,7,493,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME3202,Medical Imaging Systems I,3,2,elective,60,4,1,493,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME3203,Biomedical Instrumentation,3,2,elective,60,4,2,493,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME3208,Biological Modelling and Simulation,3,2,elective,60,4,3,493,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BCE3215,Digital Signal Processing,3,2,elective,60,4,4,493,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME3210,BME Workshop Practice IV,3,2,elective,60,4,5,493,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME3207,Junior BME Project,3,2,elective,60,4,6,493,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,MIE3202,Design of Machine Elements,3,2,elective,60,4,7,493,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME3211,Biomedical Optics & Lasers,3,2,elective,60,4,8,493,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME3301,BME Internship Training II,3,3,core,60,4,1,495,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME4101,Medical Imaging Systems II,4,1,elective,60,4,1,498,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME4106,Biomedical Signal & Image Processing,4,1,elective,60,4,2,498,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME4110,Rehabilitative & Assistive Technology,4,1,elective,60,4,3,498,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BCE4113,Engineering Project Planning & Mgt,4,1,elective,45,3,4,498,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME4112,Senior BME Project (Design),4,1,elective,45,3,5,498,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME4111,Machine Learning & Pattern Recognition,4,1,elective,60,4,6,498,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,MIE4106,Finite Element Analysis,4,1,elective,60,4,7,498,Conflicting handbook definitions: Finite Element Analysis (4 CU) | Finite Element Analysis in Mechanical Engineering (4 CU)
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BCE4223,Entrepreneurship & Business Management,4,2,elective,45,3,1,498,Conflicting handbook definitions: Entrepreneurship & Business Management (3 CU) | Entrepreneurship and Business Management (3 CU)
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BCE4202,Professional Law and Ethics for Engineers,4,2,elective,45,3,2,498,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME4210,Tissue Engineering & Reg. Medicine,4,2,elective,60,4,3,498,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME4211,Human Factor Engineering & Ergonomics,4,2,elective,45,3,4,498,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME4212,Senior BME Project (Implementation),4,2,elective,60,4,5,498,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME4205,Medical Robotics,4,2,elective,45,3,6,498,
+bachelor-of-biomedical-engineering,Undergraduate Handbook 2025/2026,BME4213,Emerging Trends in BME,4,2,elective,45,3,7,498,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE1101,Electricity and Magnetism,1,1,core,45,3,1,697,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE1105,Physical Electronics,1,1,core,45,3,2,697,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE1106,Engineering Mathematics I,1,1,core,60,4,3,697,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE1111,Engineering Materials,1,1,core,45,3,4,697,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,BCE1104,Information & Communications Technology,1,1,core,45,3,5,697,Conflicting handbook definitions: Information & Communications Technology (3 CU) | Information and Communication Technology (3 CU)
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,COM1101,Communication Skills,1,1,core,45,3,6,697,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,DVS1106,Introduction to Political Economy,1,1,core,45,3,7,697,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE1207,Circuit Theory,1,2,core,45,3,1,698,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE1206,Engineering Mathematics II,1,2,core,60,4,2,698,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE1203,Engineering Drawing,1,2,core,45,3,3,698,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE1209,Digital Electronics,1,2,core,45,3,4,698,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE1213,Sensor Technology,1,2,core,45,3,5,698,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE1215,Fundamentals of Computer Programming,1,2,core,45,3,6,698,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,DVS1203,Political Economy of Africa and Development,1,2,core,45,3,7,698,Conflicting handbook definitions: Political Economy of Africa & Development (3 CU) | Political Economy of Africa and Development (3 CU)
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE1301,Workshop Practice,1,3,core,60,4,1,703,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE2114,Simulation and Testing Engineering,2,1,core,45,3,1,709,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE2103,Engineering Mathematics III,2,1,core,60,4,2,709,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE2104,Electrical Machine Design,2,1,core,45,3,3,709,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,BCE2113,Object Oriented Programming – Java,2,1,core,45,3,4,709,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE2106,Engineering Ethics,2,1,core,45,3,5,709,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,BCE2102,Digital Systems,2,1,core,45,3,6,709,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE2211,Power Systems Analysis,2,2,core,45,3,1,710,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE2212,Electric Machine Modeling,2,2,core,45,3,2,710,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE2206,Engineering Mathematics IV,2,2,core,60,4,3,710,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE2213,Basic PLC Programming,2,2,core,60,4,4,710,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE2214,Electromagnetic Fields,2,2,core,45,3,5,710,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE2216,Research Methods,2,2,core,45,3,6,710,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE2301,Industrial Training I,2,3,core,60,4,1,713,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE3111,Semiconductor Devices and Applications,3,1,core,45,3,1,720,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,BCE3123,Internet of Things (IoT),3,1,core,45,3,2,720,Conflicting handbook definitions: Internet of Things (IoT) (3 CU) | Signals and Systems (3 CU)
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,BCE3110,Communication Systems Engineering,3,1,core,45,3,3,720,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE3112,Analog Electronics,3,1,core,60,4,4,720,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE3115,Renewable Energy Engineering,3,1,core,45,3,5,720,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,BME3101,Microprocessors,3,1,elective,45,3,6,720,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,BCE3121,VLSI Systems and Design,3,1,elective,45,3,7,720,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE3211,Radio Propagation & Antennas,3,2,core,60,4,1,732,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,BCE3214,Embedded Systems Programming and Design,3,2,core,60,4,2,732,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,BCE3215,Digital Signal Processing,3,2,core,60,4,3,732,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,BCE3216,Instrumentation and Measurements,3,2,core,45,3,4,732,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE3206,Mini Engineering Project,3,2,core,45,3,5,732,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE3202,Electronic Circuits,3,2,elective,45,3,6,732,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE3208,Power Electronics,3,2,elective,45,3,7,732,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE3301,Industrial Training II,3,3,core,60,4,1,743,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE4102,Maintenance Engineering,4,1,core,45,3,1,751,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE4113,"Power Generation, Operation & Control",4,1,core,45,3,2,751,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE4105,Electrical Installation Design,4,1,core,45,3,3,751,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,BCE4112,Control Systems Engineering,4,1,core,60,4,4,751,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE4207,Final Year Project (Design),4,1,core,45,3,5,751,Semester taken from the Year 4 Semester I table.; Conflicting handbook definitions: Final Year Project (Design) (3 CU) | Final Year Project (Implementation) (4 CU)
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE4104,TV and Video Engineering,4,1,elective,45,3,6,751,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,BCE4107,Optical Communication Systems,4,1,elective,45,3,7,751,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE4108,Telecommunication Systems,4,1,elective,45,3,8,751,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE4201,Power Systems Protection & Coordination,4,2,core,45,3,1,760,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,BCE4223,Entrepreneurship and Business Management,4,2,core,45,3,2,760,Conflicting handbook definitions: Entrepreneurship & Business Management (3 CU) | Entrepreneurship and Business Management (3 CU)
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE4207,Final Year Project (Implementation),4,2,core,60,4,3,760,Conflicting handbook definitions: Final Year Project (Design) (3 CU) | Final Year Project (Implementation) (4 CU)
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,BCE4202,Professional Law and Ethics for Engineers,4,2,core,45,3,4,760,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,EEE4206,Radio Frequency Engineering,4,2,elective,45,3,5,760,
+bachelor-of-electrical-and-electronics-engineering,Undergraduate Handbook 2025/2026,BCE4222,Robotics Engineering,4,2,elective,45,3,6,760,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE1101,Engineering Mathematics I,1,1,core,60,4,1,1194,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE1102,Engineering Mechanics I (Statics),1,1,core,60,4,2,1194,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE1103,Engineering Drawing (Drawing Board Mode),1,1,core,60,4,3,1194,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE1104,Electricity and Magnetism,1,1,core,45,3,4,1194,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE1105,Information and Communications Technology,1,1,core,45,3,5,1194,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,COM1101,Communication Skills,1,1,core,45,3,6,1194,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE1106,Production Engineering I,1,1,core,60,4,7,1194,Corrected duplicated code using the handbook course-description heading.
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,DVS1101,Development Studies I,1,1,core,45,3,8,1194,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE1201,Engineering Mathematics II,1,2,core,60,4,1,1198,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE1202,Engineering Mechanics II (Dynamics),1,2,core,60,4,2,1198,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE1203,Electrical Machines for Mechanical Engineers,1,2,core,45,3,3,1198,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE1204,Numerical Analysis aand Computer Programming,1,2,core,60,4,4,1198,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE1205,Production Engineering II,1,2,core,60,4,5,1198,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE1206,Applied Chemistry,1,2,core,45,3,6,1198,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,DVS1201,Development Studies,1,2,core,45,3,7,1198,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE1207,Workshop Practice,1,2,core,45,3,1,1201,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE2201,Fluid Mechanics II,2,2,core,60,4,1,1206,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE2202,Operations Research,2,2,core,45,3,2,1206,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE2203,Principles of Thermodynamics,2,2,core,60,4,3,1206,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE2204,Mechanics of Materials II,2,2,core,60,4,4,1206,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,BBA2203,Human Resource Management,2,2,core,45,3,5,1206,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,BBA1209,Entrepreneurship Development & Business Ethics,1,2,core,45,3,1,1206,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,DVS2202,Development Studies IV,2,2,core,45,3,6,1206,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE2101,Engineering Mathematics III,2,1,core,60,4,1,1208,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE2102,Mechanica of Materials I,2,1,core,60,4,2,1208,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE2103,Computer-Aided Design for Mechanical Engineers,2,1,core,60,4,3,1208,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE2104,Fluid Mechanics I,2,1,core,60,4,4,1208,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE2105,Plant Layout and Material Handling,2,1,core,45,3,5,1208,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE2106,Principles of Mechatronics,2,1,core,45,3,6,1208,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE2107,Quality and Reliability Engineering,2,1,core,45,3,7,1208,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,DVS2102,Development Studies III,2,1,core,45,3,8,1208,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE2205,Industrial Training I,2,2,core,45,3,1,1210,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE3101,Product Design and Development,3,1,core,60,4,1,1216,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE3102,Dynamic Systems Engineering,3,1,core,60,4,2,1216,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE3103,Materials Science and Engineering,3,1,core,60,4,3,1216,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE3104,Theory of Machines,3,1,core,60,4,4,1216,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE3105,Applied Thermodynamics,3,1,core,60,4,5,1216,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,PEEM3101,HSE and Management Systems,3,1,core,45,3,6,1216,Conflicting handbook definitions: HSE and Management System (3 CU) | HSE and Management Systems (3 CU)
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,BBA3102,Management Accounting,3,1,core,45,3,7,1216,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE3201,Heat Transfer,3,2,core,60,4,1,1217,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE3202,Design of Machine Elements,3,2,core,60,4,2,1217,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE3203,Control Systems Engineering,3,2,core,60,4,3,1217,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE3204,Engineering Management,3,2,core,60,4,4,1217,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE3205,Mini Engineering Project,3,2,core,45,3,5,1217,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE3206,Technical Report Writing,3,2,core,45,3,6,1217,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE3207,Industrial training II,3,2,core,45,3,1,1219,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE4201,Final Year Project Implementation,4,2,core,60,4,1,1223,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE4202,Automotive Engineering,4,2,core,60,4,2,1223,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE4203,Environmental Engineering,4,2,core,60,4,3,1223,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE4204,Ethics and Legal Issues in Engineering,4,2,core,45,3,4,1223,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE4205,Regression Applications and Forecasting in Engineering,4,2,core,45,3,5,1223,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE4206,Air Conditioning and Refrigeration,4,2,elective,60,4,6,1223,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE4207,Welding Technology,4,2,elective,60,4,7,1223,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE4101,Final Year Project Proposal,4,1,core,45,3,1,1225,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE4102,Production Planning and Inventory Control,4,1,core,45,3,2,1225,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE4103,Maintenance Engineering,4,1,core,60,4,3,1225,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE4104,Fluid Power Systems,4,1,core,60,4,4,1225,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE4105,Introduction to Robotics,4,1,core,60,4,5,1225,
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE4106,Finite Element Analysis in Mechanical Engineering,4,1,elective,60,4,6,1225,Conflicting handbook definitions: Finite Element Analysis (4 CU) | Finite Element Analysis in Mechanical Engineering (4 CU)
+bachelor-of-mechanical-and-industrial-engineering,Undergraduate Handbook 2025/2026,MIE4107,Renewable Energy Technology,4,1,elective,60,4,7,1225,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE1101,Engineering Mathematics I,1,1,core,60,4,1,1396,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE1102,Introduction to Civil Engineering,1,1,core,60,4,2,1396,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE1103,Engineering Mechanics I (Statics),1,1,core,60,4,3,1396,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE1104,Civil Engineering Drawing,1,1,core,60,4,4,1396,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE1105,Electricity and Magnetism,1,1,core,45,3,5,1396,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE1106,Information and Communications Technology,1,1,core,45,3,6,1396,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,COM1101,Communication Skills,1,1,core,45,3,7,1396,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,DVS1101,Development Studies I,1,1,core,45,3,8,1396,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE1201,Engineering Mathematics II,1,2,core,60,4,1,1399,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE1202,Engineering Mechanics II (Dynamics),1,2,core,60,4,2,1399,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE1203,Electrical Machines for Civil Engineers,1,2,core,45,3,3,1399,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE1204,Computer Programming for Civil Engineers,1,2,core,45,3,4,1399,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE1205,Strength of Materials,1,2,core,60,4,5,1399,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE1206,Applied Chemistry,1,2,core,45,3,6,1399,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,DVS1202,Development Studies II,1,2,core,45,3,7,1399,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE1207,Workshop Practice,1,2,core,60,4,8,1399,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE2101,Engineering Mathematics III,2,1,core,60,4,1,1403,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE2102,Fluid Mechanics,2,1,core,60,4,2,1403,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE2103,Geotechnical Engineering,2,1,core,60,4,3,1403,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE2104,Engineering Geology,2,1,core,60,4,4,1403,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE2105,Theory of Structures I,2,1,core,60,4,5,1403,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE2106,Engineering Surveying I,2,1,core,60,4,6,1403,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,DVS2102,Development Studies III,2,1,core,45,3,7,1403,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE2201,Theory of Structures II,2,2,core,60,4,1,1406,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE2202,Soil Mechanics,2,2,core,60,4,2,1406,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE2204,Engineering Surveying II,2,2,core,60,4,3,1406,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE2203,Thermodynamics for Civil Engineers,2,2,core,45,3,4,1406,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,BBA2203,Human Resource Management,2,2,core,45,3,5,1406,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,BBA1209,Entrepreneurship Development & Business Ethics,1,2,core,45,3,1,1406,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,DVS2202,Development Studies IV,2,2,core,45,3,6,1406,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE2205,Industrial Training I,2,2,core,60,4,7,1406,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE3101,Civil Engineering Materials,3,1,core,60,4,1,1410,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE3102,Highway Engineering,3,1,core,60,4,2,1410,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE3103,Construction Technology,3,1,core,60,4,3,1410,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE3104,Hydrology I,3,1,core,60,4,4,1410,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE3105,Design of Structures I (Concrete),3,1,core,60,4,5,1410,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,PEEM3101,HSE and Management System,3,1,core,45,3,6,1410,Conflicting handbook definitions: HSE and Management System (3 CU) | HSE and Management Systems (3 CU)
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,BBA3102,Management Accounting,3,1,core,45,3,7,1410,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE3201,Design of Structures II (Steel),3,2,core,60,4,1,1413,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE3202,Water Resources Engineering I,3,2,core,60,4,2,1413,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE3203,Public Health Engineering I,3,2,core,60,4,3,1413,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE3204,Engineering Management,3,2,core,45,3,4,1413,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE3205,Mini Engineering Project,3,2,core,45,3,5,1413,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE3206,Technical Report Writing,3,2,core,45,3,6,1413,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE3207,Industrial Training II,3,2,core,60,4,7,1413,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE4101,Final Year Project Proposal,4,1,core,45,3,1,1417,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE4102,Principles of Quantity Surveying,4,1,core,45,3,2,1417,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE4103,Public Health Engineering II,4,1,core,60,4,3,1417,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE4104,Civil Engineering Infrastructure Maintenance,4,1,core,60,4,4,1417,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE4105,Design of Structures III (Timber and Masonry),4,1,elective,60,4,5,1417,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE4106,Advanced Structural Analysis,4,1,elective,60,4,6,1417,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE4201,Final Year Project Implementation,4,2,core,60,4,1,1420,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE4202,Traffic and Transportation Engineering,4,2,core,60,4,2,1420,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE4203,Civil Engineering Law,4,2,core,60,4,3,1420,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE4204,Ethics and Legal Issues in Engineering,4,2,core,45,3,4,1420,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE4206,Water Resources Engineering II,4,2,elective,60,4,5,1420,
+bachelor-of-science-in-civil-and-building-services-engineering,Undergraduate Handbook 2025/2026,CVE4207,Hydrology II,4,2,elective,60,4,6,1420,
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM1101,Fundamentals of Environmental Management,1,1,core,45,3,1,nested-1,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM1201,Physical Geology,1,2,core,45,3,1,nested-1,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,EEE1106,Engineering Mathematics I,1,1,core,60,4,2,nested-1,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,EEE1206,Engineering Mathematics II,1,2,core,60,4,2,nested-1,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM1102,Applied Physics I,1,1,core,45,3,3,nested-1,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM1202,Applied Physics II,1,2,core,45,3,3,nested-1,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM1103,Engineering Drawing,1,1,core,45,3,4,nested-1,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM1203,Materials Science and Engineering,1,2,core,45,3,4,nested-1,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM1104,Fundamentals of Petroleum Engineering,1,1,core,45,3,5,nested-1,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM1204,General Chemistry,1,2,core,45,3,5,nested-1,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM1105,Applied Biodiversity,1,1,core,45,3,6,nested-1,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM1205,Reservoir Thermodynamics and Fluid Properties,1,2,core,45,3,6,nested-1,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,BCE1104,Information and Communication Technology,1,1,core,45,3,7,nested-1,Nested Word table; Conflicting handbook definitions: Information & Communications Technology (3 CU) | Information and Communication Technology (3 CU)
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,DVS1203,Political Economy of Africa and Development,1,2,core,45,3,7,nested-1,Nested Word table; Conflicting handbook definitions: Political Economy of Africa & Development (3 CU) | Political Economy of Africa and Development (3 CU)
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,COM1101,Communication Skills,1,1,core,45,3,8,nested-1,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,EEE1215,Fundamentals of Computer Programming,1,2,core,45,3,8,nested-1,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,DVS1106,Introduction to Political Economy,1,1,core,45,3,9,nested-1,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM1301,Workshop Practice I,1,3,core,45,3,1,nested-1,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM2101,Sedimentology and Stratigraphy,2,1,core,45,3,1,nested-2,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM2201,Drilling Engineering I,2,2,core,60,4,1,nested-2,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM2102,Computer Aided Design,2,1,core,45,3,2,nested-2,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,DVS2201,"Citizenry, Professionalism, Globalization and Entrepreneurship",2,2,core,45,3,2,nested-2,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,EEE2103,Engineering Mathematics III,2,1,core,60,4,3,nested-2,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM2202,Petrophysics,2,2,core,45,3,3,nested-2,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM2103,Petroleum Geology,2,1,core,45,3,4,nested-2,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM2203,Oilfield Chemistry,2,2,core,45,3,4,nested-2,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM2104,Geophysics,2,1,core,60,4,5,nested-2,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,EEE2215,Engineering Mathematics IV,2,2,core,60,4,5,nested-2,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM2105,Fluid Mechanics,2,1,core,45,3,6,nested-2,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM2204,Engineered Environmental Systems,2,2,core,45,3,6,nested-2,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM2106,Workshop practice II,2,1,core,45,3,7,nested-2,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM2205,Environmental Toxicology,2,2,core,45,3,7,nested-2,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,DVS2105,Political Economy of Uganda,2,1,core,45,3,8,nested-2,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM2301,Industrial Training,2,3,core,45,3,1,nested-2,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM3101,HSE Management in Oil and Gas Industry,3,1,core,45,3,1,nested-3,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM3201,Environmental Control in Petroleum Engineering,3,2,core,45,3,1,nested-3,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM3102,Reservoir Engineering I,3,1,core,60,4,2,nested-3,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM3202,Reservoir Engineering II,3,2,core,60,4,2,nested-3,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM3103,Well Logging and Integrated Interpretation,3,1,core,45,3,3,nested-3,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM3203,Production Engineering I,3,2,core,60,4,3,nested-3,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM3104,Drilling Engineering II,3,1,core,60,4,4,nested-3,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM3204,Electrotechnics and Electronics,3,2,core,45,3,4,nested-3,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM3105,Research Methods,3,1,core,45,3,5,nested-3,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM3205,Group Project,3,2,core,45,3,5,nested-3,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM3106,"Procurement, Logistics & Supply Chain Management for Engineers",3,1,core,45,3,6,nested-3,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM3206,Pipeline Engineering,3,2,core,45,3,6,nested-3,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM3107,Process Dynamics and Control,3,1,elective,45,3,7,nested-3,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM3301,Industrial Training II,3,3,core,45,3,1,nested-3,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM3108,Reservoir Characterization and Modelling,3,1,elective,45,3,8,nested-3,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM4101,Petroleum Production Engineering II,4,1,core,60,4,1,nested-4,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM4201,Engineering Research Project,4,2,core,60,4,1,nested-4,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM4102,Petroleum Economics and Management,4,1,core,45,3,2,nested-4,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM4202,Entrepreneurship Development and Business Ethics,4,2,core,45,3,2,nested-4,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM4103,Gas Reservoir Engineering,4,1,core,45,3,3,nested-4,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM4203,Engineering Ethics,4,2,core,45,3,3,nested-4,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM4104,Numerical Reservoir Simulation,4,1,core,45,3,4,nested-4,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM4204,"Energy Policy, Planning and Sustainable Development",4,2,core,45,3,4,nested-4,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM4105,Principles of Enhanced Oil Recovery,4,1,core,45,3,5,nested-4,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM4205,Petroleum Processing,4,2,core,45,3,5,nested-4,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM4106,Technology of Artificial Lift Methods,4,1,elective,45,3,6,nested-4,Nested Word table
+bachelor-of-petroleum-engineering-and-environmental-management,Undergraduate Handbook 2025/2026,PEM4107,Principles of Modern Well Testing and Interpretation,4,1,elective,45,3,7,nested-4,Nested Word table

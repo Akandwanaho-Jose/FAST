@@ -12,13 +12,17 @@ final class StaffValidator
         'academic', 'administrative', 'technical', 'support',
         'research', 'visiting', 'emeritus', 'other',
     ];
+    private const LINK_TYPES = [
+        'orcid', 'google_scholar', 'researchgate', 'linkedin',
+        'institutional_repository', 'personal_website', 'other',
+    ];
 
     public function __construct(private readonly StaffRepository $staff)
     {
     }
 
-    /** @param array<string,string|null> $input
-     * @return array{data:array<string,mixed>,assignment:array<string,mixed>,errors:list<string>}
+    /** @param array<string,mixed> $input
+     * @return array{data:array<string,mixed>,assignment:array<string,mixed>,relations:array<string,mixed>,errors:list<string>}
      */
     public function validate(array $input, ?int $existingId = null): array
     {
@@ -121,6 +125,7 @@ final class StaffValidator
             $errors[] = 'Display order must be from 0 to 65535.';
             $order = 0;
         }
+        $relations = $this->relations($input, $errors);
 
         return [
             'data' => [
@@ -143,6 +148,7 @@ final class StaffValidator
                 'public_phone' => $this->limited($input, 'public_phone', 50, $errors),
                 'profile_media_id' => $mediaId,
                 'office_location_id' => $locationId,
+                'office_room' => $this->limited($input, 'office_room', 120, $errors),
                 'consultation_hours' => $this->limited($input, 'consultation_hours', 255, $errors),
                 'supervision_available' => ($input['supervision_available'] ?? '') === '1' ? 1 : 0,
                 'display_order' => (int) $order,
@@ -152,7 +158,107 @@ final class StaffValidator
                 'position_id' => $positionId,
                 'title_override' => $this->limited($input, 'title_override', 150, $errors),
             ],
+            'relations' => $relations,
             'errors' => $errors,
+        ];
+    }
+
+    /** @param array<string,mixed> $input @param list<string> $errors
+     * @return array{qualifications:list<array<string,mixed>>,links:list<array<string,mixed>>,expertise_ids:list<int>}
+     */
+    private function relations(array $input, array &$errors): array
+    {
+        $qualifications = [];
+        foreach (is_array($input['qualifications'] ?? null) ? $input['qualifications'] : [] as $row) {
+            if (!is_array($row)) {
+                continue;
+            }
+            $qualification = trim((string) ($row['qualification'] ?? ''));
+            $field = trim((string) ($row['field_of_study'] ?? ''));
+            $institution = trim((string) ($row['institution'] ?? ''));
+            $country = trim((string) ($row['country'] ?? ''));
+            $yearValue = trim((string) ($row['completion_year'] ?? ''));
+            if ($qualification === '' && $field === '' && $institution === ''
+                && $country === '' && $yearValue === ''
+            ) {
+                continue;
+            }
+            if ($qualification === '') {
+                $errors[] = 'Each qualification entry needs a qualification or award.';
+                continue;
+            }
+            if (mb_strlen($qualification) > 200 || mb_strlen($field) > 200
+                || mb_strlen($institution) > 255 || mb_strlen($country) > 100
+            ) {
+                $errors[] = 'A qualification entry contains text that is too long.';
+                continue;
+            }
+            $year = null;
+            if ($yearValue !== '') {
+                $validYear = filter_var($yearValue, FILTER_VALIDATE_INT, [
+                    'options' => ['min_range' => 1900, 'max_range' => (int) date('Y') + 10],
+                ]);
+                if ($validYear === false) {
+                    $errors[] = 'Qualification years must be valid four-digit years.';
+                    continue;
+                }
+                $year = (int) $validYear;
+            }
+            $qualifications[] = [
+                'qualification' => $qualification,
+                'field_of_study' => $field !== '' ? $field : null,
+                'institution' => $institution !== '' ? $institution : null,
+                'country' => $country !== '' ? $country : null,
+                'completion_year' => $year,
+            ];
+        }
+
+        $links = [];
+        foreach (is_array($input['links'] ?? null) ? $input['links'] : [] as $row) {
+            if (!is_array($row)) {
+                continue;
+            }
+            $type = trim((string) ($row['link_type'] ?? ''));
+            $label = trim((string) ($row['label'] ?? ''));
+            $url = trim((string) ($row['url'] ?? ''));
+            if ($label === '' && $url === '') {
+                continue;
+            }
+            if (!in_array($type, self::LINK_TYPES, true)) {
+                $errors[] = 'Select a valid professional link type.';
+                continue;
+            }
+            if ($url === '' || filter_var($url, FILTER_VALIDATE_URL) === false
+                || !in_array(strtolower((string) parse_url($url, PHP_URL_SCHEME)), ['http', 'https'], true)
+            ) {
+                $errors[] = 'Professional links must use a complete http or https address.';
+                continue;
+            }
+            if (mb_strlen($url) > 500 || mb_strlen($label) > 120) {
+                $errors[] = 'A professional link is too long.';
+                continue;
+            }
+            $links[] = [
+                'link_type' => $type,
+                'label' => $label !== '' ? $label : null,
+                'url' => $url,
+            ];
+        }
+
+        $expertiseIds = [];
+        foreach (is_array($input['expertise_ids'] ?? null) ? $input['expertise_ids'] : [] as $value) {
+            $id = filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+            if ($id === false || !$this->staff->relationExists('expertise_areas', (int) $id)) {
+                $errors[] = 'Select valid areas of expertise.';
+                continue;
+            }
+            $expertiseIds[] = (int) $id;
+        }
+
+        return [
+            'qualifications' => $qualifications,
+            'links' => $links,
+            'expertise_ids' => array_values(array_unique($expertiseIds)),
         ];
     }
 
@@ -162,7 +268,7 @@ final class StaffValidator
         return $value === '' ? null : $value;
     }
 
-    /** @param array<string,string|null> $input @param list<string> $errors */
+    /** @param array<string,mixed> $input @param list<string> $errors */
     private function limited(array $input, string $field, int $max, array &$errors): ?string
     {
         $value = $this->nullable($input[$field] ?? null);

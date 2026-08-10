@@ -19,9 +19,11 @@ $roleNames = array_map(
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="<?= View::escape($metaDescription ?? '') ?>">
     <title><?= View::escape($title) ?> | FAST Admin</title>
+    <link rel="icon" type="image/webp" href="<?= View::escape($urlBase) ?>assets/images/must-logo.webp?v=20260806-01">
+    <link rel="apple-touch-icon" href="<?= View::escape($urlBase) ?>assets/images/must-logo.webp?v=20260806-01">
     <link rel="stylesheet" href="<?= View::escape($urlBase) ?>assets/css/app.css">
-    <link rel="stylesheet" href="<?= View::escape($urlBase) ?>assets/css/admin.css">
-    <script defer src="<?= View::escape($urlBase) ?>assets/js/admin-editor.js"></script>
+    <link rel="stylesheet" href="<?= View::escape($urlBase) ?>assets/css/admin.css?v=20260806-02">
+    <script defer src="<?= View::escape($urlBase) ?>assets/js/admin-editor.js?v=20260806-02"></script>
 </head>
 <body class="admin-body">
     <a class="skip-link" href="#admin-main">Skip to main content</a>

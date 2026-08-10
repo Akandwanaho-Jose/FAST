@@ -30,7 +30,7 @@ final class StaffAdminController extends Controller
         'short_biography', 'biography', 'research_summary', 'teaching_summary',
         'supervision_interests', 'institutional_email', 'alternative_email',
         'public_phone', 'profile_media_id', 'profile_alt_text',
-        'office_location_id', 'consultation_hours', 'supervision_available',
+        'office_location_id', 'office_room', 'consultation_hours', 'supervision_available',
         'display_order',
     ];
 
@@ -240,14 +240,16 @@ final class StaffAdminController extends Controller
                         $validation['assignment'],
                         (int) $user['id'],
                         $request->ipAddress(),
-                        $request->userAgent()
+                        $request->userAgent(),
+                        $validation['relations']
                     )
                     : $this->service->create(
                         $data,
                         $validation['assignment'],
                         (int) $user['id'],
                         $request->ipAddress(),
-                        $request->userAgent()
+                        $request->userAgent(),
+                        $validation['relations']
                     );
             }
             if ($currentStatus === 'published') {
@@ -258,19 +260,22 @@ final class StaffAdminController extends Controller
                     (int) $user['id'],
                     $note,
                     $request->ipAddress(),
-                    $request->userAgent()
+                    $request->userAgent(),
+                    $validation['relations']
                 );
                 return $id;
             }
             if ($request->input('submit_action') === 'publish') {
                 $this->service->updateAndPublish(
                     $id, $data, $validation['assignment'], (int) $user['id'],
-                    $note, $request->ipAddress(), $request->userAgent()
+                    $note, $request->ipAddress(), $request->userAgent(),
+                    $validation['relations']
                 );
             } else {
                 $this->service->update(
                     $id, $data, $validation['assignment'], (int) $user['id'],
-                    $note, $request->ipAddress(), $request->userAgent()
+                    $note, $request->ipAddress(), $request->userAgent(),
+                    $validation['relations']
                 );
             }
             return $id;
@@ -312,6 +317,11 @@ final class StaffAdminController extends Controller
             )->fetchColumn();
             $values = ['faculty_id' => (string) $faculty, 'staff_category' => 'academic', 'display_order' => '0'];
         }
+        if ($id !== null && !array_key_exists('qualifications', $values)) {
+            $values['qualifications'] = $this->staff->adminQualifications($id);
+            $values['links'] = $this->staff->adminLinks($id);
+            $values['expertise_ids'] = $this->staff->adminExpertiseIds($id);
+        }
         return $this->adminView($request, $user, 'admin/staff/form', [
             'pageTitle' => $id === null ? 'Create staff profile' : 'Edit staff profile',
             'staffId' => $id,
@@ -321,6 +331,7 @@ final class StaffAdminController extends Controller
             'positions' => $this->staff->positions(),
             'locations' => $this->staff->locations(),
             'images' => $this->staff->activeImages(),
+            'expertiseAreas' => $this->staff->expertiseAreas(),
             'revisionNote' => $note,
             'canPublishDirectly' => $this->service->canDirectPublish((int) $user['id']),
             'currentStatus' => $status,
@@ -353,13 +364,16 @@ final class StaffAdminController extends Controller
         return (int) $value;
     }
 
-    /** @return array<string,string|null> */
+    /** @return array<string,mixed> */
     private function values(Request $request): array
     {
         $values = [];
         foreach (self::FIELDS as $field) {
             $values[$field] = $request->input($field);
         }
+        $values['qualifications'] = $request->arrayInput('qualifications');
+        $values['links'] = $request->arrayInput('links');
+        $values['expertise_ids'] = $request->arrayInput('expertise_ids');
         return $values;
     }
 

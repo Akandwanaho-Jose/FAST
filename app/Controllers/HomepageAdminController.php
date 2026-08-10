@@ -37,6 +37,7 @@ final class HomepageAdminController extends Controller
             'slides' => $this->homepage->adminSlides(),
             'sections' => $this->homepage->sections(true),
             'quickLinks' => $this->homepage->quickLinks(true),
+            'images' => $this->homepage->activeImages(),
         ]);
     }
 
@@ -70,10 +71,15 @@ final class HomepageAdminController extends Controller
         if ($url === '' || preg_match('#^(?:https?://|/[^/])#i', $url) !== 1) {
             throw new HttpException(422, 'Quick-link URL must be an internal path or a complete http(s) URL.');
         }
+        $mediaId = $this->positiveInteger($request->input('media_id'));
+        if ($mediaId !== null && !$this->homepage->activeImageExists($mediaId)) {
+            throw new HttpException(422, 'Choose a valid active image for this quick link.');
+        }
         $this->homepage->updateQuickLink($id, [
             'label' => $label,
             'description' => $this->nullable($request->input('description'), 255),
             'link_url' => mb_substr($url, 0, 500),
+            'media_id' => $mediaId,
             'display_order' => max(0, min(32767, (int) $request->input('display_order', 0))),
             'is_active' => (string) $request->input('is_active') === '1' ? 1 : 0,
         ]);

@@ -72,6 +72,7 @@ return static function (): void {
             'public_phone' => '',
             'profile_media_id' => '',
             'office_location_id' => '',
+            'office_room' => 'TF01',
             'consultation_hours' => '',
             'supervision_available' => '1',
             'display_order' => '1',
@@ -93,6 +94,7 @@ return static function (): void {
         $profile = $repository->findAdmin($id, $userId);
         if (!is_array($profile) || $profile['status'] !== 'draft'
             || (int) $profile['department_id'] !== $departmentId
+            || $profile['office_room'] !== 'TF01'
         ) {
             throw new RuntimeException('Draft staff profile or assignment was not stored.');
         }
@@ -150,6 +152,16 @@ return static function (): void {
             throw new RuntimeException('Archived staff did not restore to draft.');
         }
 
+        $expertise = $connection->prepare(
+            'INSERT INTO expertise_areas (name, slug, status)
+             VALUES (:name, :slug, "active")'
+        );
+        $expertise->execute([
+            'name' => 'Transactional Expertise ' . $suffix,
+            'slug' => 'transactional-expertise-' . $suffix,
+        ]);
+        $expertiseId = (int) $connection->lastInsertId();
+
         $directData = $validated['data'];
         $directData['staff_number'] = 'DIRECT-' . $suffix;
         $directData['slug'] = 'directly-published-staff-' . $suffix;
@@ -161,7 +173,22 @@ return static function (): void {
             $directAssignment,
             $userId,
             '127.0.0.11',
-            'FAST staff integration test'
+            'FAST staff integration test',
+            [
+                'expertise_ids' => [$expertiseId],
+                'qualifications' => [[
+                    'qualification' => 'PhD',
+                    'field_of_study' => 'Transactional Systems',
+                    'institution' => 'FAST Test University',
+                    'country' => null,
+                    'completion_year' => null,
+                ]],
+                'links' => [[
+                    'link_type' => 'orcid',
+                    'label' => 'Test ORCID',
+                    'url' => 'https://example.invalid/orcid/' . $suffix,
+                ]],
+            ]
         );
 
         if ($directId < 1
@@ -171,33 +198,6 @@ return static function (): void {
                 'Create-and-publish did not create a public staff profile.'
             );
         }
-
-        $expertise = $connection->prepare(
-            'INSERT INTO expertise_areas (name, slug, status)
-             VALUES (:name, :slug, "active")'
-        );
-        $expertise->execute([
-            'name' => 'Transactional Expertise ' . $suffix,
-            'slug' => 'transactional-expertise-' . $suffix,
-        ]);
-        $expertiseId = (int) $connection->lastInsertId();
-        $connection->prepare(
-            'INSERT INTO staff_expertise
-                (staff_id, expertise_area_id, is_primary, display_order)
-             VALUES (:staff, :expertise, 1, 0)'
-        )->execute(['staff' => $directId, 'expertise' => $expertiseId]);
-        $connection->prepare(
-            'INSERT INTO staff_qualifications
-                (staff_id, qualification, field_of_study, institution, display_order)
-             VALUES (:staff, "PhD", "Transactional Systems", "FAST Test University", 0)'
-        )->execute(['staff' => $directId]);
-        $connection->prepare(
-            'INSERT INTO staff_links (staff_id, link_type, label, url, display_order)
-             VALUES (:staff, "orcid", "Test ORCID", :url, 0)'
-        )->execute([
-            'staff' => $directId,
-            'url' => 'https://example.invalid/orcid/' . $suffix,
-        ]);
 
         $filtered = $repository->paginatePublished(
             'Transactional',

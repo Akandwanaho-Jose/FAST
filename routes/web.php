@@ -99,6 +99,8 @@ return static function (
     };
 
     $router->get('/', [$homeController, 'index']);
+    $router->get('/about', [$siteContentPublicController, 'aboutIndex']);
+    $router->get('/about/{slug}', [$siteContentPublicController, 'aboutPage']);
     $router->get('/health', [new HealthController($view, $database), 'show']);
     $router->get('/departments', [$departmentPublicController, 'index']);
     $router->get('/departments/{slug}', [$departmentPublicController, 'show']);
@@ -362,6 +364,7 @@ return static function (
     $router->post('/admin/pages/{id}', $protect('pages.manage', [$siteContentAdminController, 'updatePage']));
     $router->post('/admin/pages/{id}/workflow', $protect('pages.manage', [$siteContentAdminController, 'pageWorkflow']));
     $router->post('/admin/pages/{id}/sections', $protect('pages.manage', [$siteContentAdminController, 'addSection']));
+    $router->post('/admin/pages/{id}/sections/{sectionId}', $protect('pages.manage', [$siteContentAdminController, 'updateSection']));
     $router->post('/admin/pages/{id}/sections/{sectionId}/remove', $protect('pages.manage', [$siteContentAdminController, 'removeSection']));
     $router->get('/admin/media', $protect('media.manage', [$assetAdminController, 'media']));
     $router->post('/admin/media', $protect('media.manage', [$assetAdminController, 'uploadMedia']));

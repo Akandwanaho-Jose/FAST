@@ -4,6 +4,105 @@
     --admin-canvas: #f4f5fb;
 }
 
+.page-section-manager {
+    margin-top: 2rem;
+}
+
+.page-section-manager-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.page-section-manager-heading p:last-child {
+    max-width: 760px;
+    color: var(--admin-muted, #63667a);
+}
+
+.page-section-editor-list {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.page-section-editor,
+.page-section-add {
+    border: 1px solid #dfe1ea;
+    background: #fff;
+}
+
+.page-section-editor > summary,
+.page-section-add > summary {
+    display: flex;
+    min-height: 64px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.2rem;
+    cursor: pointer;
+    list-style: none;
+}
+
+.page-section-editor > summary::-webkit-details-marker,
+.page-section-add > summary::-webkit-details-marker {
+    display: none;
+}
+
+.page-section-editor > summary span {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.page-section-editor > summary b {
+    display: grid;
+    width: 34px;
+    height: 34px;
+    place-items: center;
+    color: #202470;
+    background: #ffd740;
+    font-size: 0.72rem;
+}
+
+.page-section-editor > summary small {
+    color: #6a6d7e;
+}
+
+.page-section-editor[open] > summary,
+.page-section-add[open] > summary {
+    border-bottom: 1px solid #dfe1ea;
+    background: #f7f7fb;
+}
+
+.page-section-edit-form,
+.page-section-add > form {
+    padding: 1.25rem;
+}
+
+.page-section-remove-form {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 1.25rem 1.25rem;
+}
+
+.page-section-add {
+    margin-top: 1.5rem;
+}
+
+.page-section-add > summary {
+    color: #202470;
+    font-weight: 850;
+}
+
+@media (max-width: 720px) {
+    .page-section-manager-heading,
+    .page-section-editor > summary {
+        align-items: stretch;
+        flex-direction: column;
+    }
+}
+
 .admin-body {
     min-width: 320px;
     background: var(--admin-canvas);
@@ -254,6 +353,42 @@
     border: 1px solid var(--line);
     border-radius: 16px;
     background: #fff;
+}
+
+.admin-card-grid {
+    display: grid;
+    margin-top: 1.25rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.admin-card-grid .admin-card {
+    display: flex;
+    min-height: 210px;
+    padding: 1.35rem;
+    border: 1px solid var(--line);
+    border-top: 5px solid var(--accent);
+    border-radius: 12px;
+    background: var(--surface-soft);
+    flex-direction: column;
+}
+
+.admin-card-grid .admin-card h3 {
+    margin: .2rem 0 .6rem;
+    font-size: 1.35rem;
+}
+
+.admin-card-grid .admin-card > p:not(.eyebrow) {
+    color: var(--muted);
+}
+
+.admin-card-grid .table-actions {
+    margin-top: auto;
+    padding-top: 1rem;
+}
+
+@media (max-width: 760px) {
+    .admin-card-grid { grid-template-columns: 1fr; }
 }
 
 .panel-heading {
@@ -849,3 +984,62 @@
 .rich-editor-surface h2, .rich-editor-surface h3, .rich-editor-surface h4 { margin: .8rem 0 .4rem; }
 .rich-editor-surface blockquote { margin: 1rem 0; padding-left: 1rem; border-left: 4px solid var(--accent); color: #50516a; }
 .rich-editor-count { display: block; padding: .35rem .75rem; border-top: 1px solid #edf1f1; color: #68797b; text-align: right; }
+
+/* Staff profile relationship editors */
+.staff-expertise-picker {
+    min-width: 0;
+    margin: 0;
+    padding: 1rem;
+    border: 1px solid var(--admin-line, #d9dfd6);
+}
+
+.staff-expertise-picker legend {
+    padding: 0 .35rem;
+    font-weight: 800;
+}
+
+.staff-expertise-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .55rem 1rem;
+    margin-top: .8rem;
+}
+
+.staff-expertise-options label {
+    display: flex;
+    gap: .55rem;
+    align-items: flex-start;
+    font-weight: 600;
+}
+
+.staff-expertise-options input { margin-top: .2rem; }
+
+.staff-repeatable-list {
+    display: grid;
+    gap: .8rem;
+}
+
+.staff-repeatable-row {
+    padding: 1rem;
+    border: 1px solid var(--admin-line, #d9dfd6);
+    background: #fbfcfa;
+}
+
+.staff-repeatable-row .form-grid { align-items: end; }
+.staff-repeatable-action { align-self: end; }
+
+.text-button {
+    padding: .3rem 0;
+    border: 0;
+    color: #8a2b2b;
+    background: transparent;
+    font: inherit;
+    font-weight: 750;
+    cursor: pointer;
+}
+
+.text-button:hover { text-decoration: underline; }
+
+@media (max-width: 720px) {
+    .staff-expertise-options { grid-template-columns: 1fr; }
+}

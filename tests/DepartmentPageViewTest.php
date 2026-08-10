@@ -27,23 +27,21 @@ return static function (): void {
         'hero_path' => 'public/assets/images/example.jpg',
         'hero_alt_text' => 'Engineering students',
     ];
-    $head = [
-        'honorific_title' => 'Dr.',
-        'first_name' => 'Test',
-        'middle_name' => null,
-        'last_name' => 'Leader',
-        'post_nominals' => 'PhD',
-        'slug' => 'test-leader',
-        'short_biography' => 'Engineering educator.',
-        'institutional_email' => 'leader@example.test',
-        'position_title' => 'Head of Department',
-        'profile_path' => null,
-        'profile_alt_text' => null,
-    ];
+    $directory = $view->render('public/departments/index', [
+        'baseUrl' => '/fast/public/',
+        'search' => '',
+        'result' => ['items' => [$department], 'total' => 1, 'page' => 1, 'pages' => 1],
+        'siteContent' => [],
+    ], null);
+    foreach (['department-directory-hero', '1</strong><span>academic department', 'department-filter-bar', 'department-directory-card', 'Where ideas become practice'] as $fragment) {
+        if (!str_contains($directory, $fragment)) {
+            throw new RuntimeException('Department directory is missing: ' . $fragment);
+        }
+    }
+
     $html = $view->render('public/departments/show', [
         'baseUrl' => '/fast/public/',
         'department' => $department,
-        'headOfDepartment' => $head,
         'programmes' => [[
             'name' => 'Bachelor of Test Engineering',
             'slug' => 'bachelor-of-test-engineering',
@@ -55,12 +53,11 @@ return static function (): void {
     ], null);
 
     foreach ([
-        'class="department-masthead"',
+        'class="department-profile-hero"',
         'aria-label="On this department page"',
+        'class="department-fact-strip"',
         'id="programmes"',
         'Bachelor of Test Engineering',
-        'id="leadership"',
-        'A message from the Head of Department',
         'id="contact"',
         'Vision and direction',
     ] as $fragment) {
@@ -69,7 +66,13 @@ return static function (): void {
         }
     }
 
-    if (str_contains($html, 'department-detail-hero')) {
+    if (str_contains($html, 'department-detail-hero') || str_contains($html, 'class="department-masthead"')) {
         throw new RuntimeException('Legacy oversized department hero was rendered.');
+    }
+
+    foreach (['id="leadership"', 'A message from the Head of Department', 'Welcome to the department.'] as $removed) {
+        if (str_contains($html, $removed)) {
+            throw new RuntimeException('Removed department leadership message was rendered: ' . $removed);
+        }
     }
 };

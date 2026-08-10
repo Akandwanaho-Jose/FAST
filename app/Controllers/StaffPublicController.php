@@ -54,6 +54,7 @@ final class StaffPublicController extends Controller
             'departments' => $departments,
             'categories' => $categories,
             'expertiseAreas' => $expertiseAreas,
+            'portraitProfiles' => $this->staff->publicPortraits(),
             'result' => $this->staff->paginatePublished(
                 $search,
                 $department,

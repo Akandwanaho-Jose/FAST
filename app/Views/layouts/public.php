@@ -10,12 +10,10 @@ $description = isset($metaDescription)
     : 'Faculty of Applied Sciences and Technology website.';
 $path = isset($currentPath) ? (string) $currentPath : '';
 $urlBase = isset($baseUrl) ? (string) $baseUrl : '/';
-$assetVersion = '20260802-14';
+$assetVersion = '20260806-04';
 $settings = is_array($siteContent ?? null) ? $siteContent : [];
 $navigationData = is_array($siteNavigation ?? null) ? $siteNavigation : [];
 $programmeDepartments = $navigationData['departments'] ?? [];
-$undergraduateProgrammes = $navigationData['undergraduate'] ?? [];
-$postgraduateProgrammes = $navigationData['postgraduate'] ?? [];
 $brandShort = View::setting($settings, 'identity.short_name', 'FAST');
 $facultyName = View::setting($settings, 'identity.faculty_name', 'Faculty of Applied Sciences and Technology');
 $universityName = View::setting($settings, 'identity.university_name', 'Mbarara University of Science and Technology');
@@ -56,6 +54,7 @@ $pathStartsWith = static function (string ...$prefixes) use ($path): bool {
 };
 
 $section = match (true) {
+    $pathStartsWith('/about') => ['About FAST', 'about'],
     $pathStartsWith('/programmes') => ['Programmes', 'programmes'],
     $pathStartsWith('/documents') => ['Resources', 'documents'],
     $pathStartsWith('/departments') => ['Departments', 'departments'],
@@ -85,57 +84,69 @@ $isSectionLanding = $section !== null && match ($sectionPath) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="<?= View::escape($description) ?>">
     <title><?= View::escape($title) ?> | <?= View::escape($brandShort) ?></title>
+    <link rel="icon" type="image/webp" href="<?= View::escape($urlBase) ?>assets/images/must-logo.webp?v=20260806-01">
+    <link rel="apple-touch-icon" href="<?= View::escape($urlBase) ?>assets/images/must-logo.webp?v=20260806-01">
     <link rel="stylesheet" href="<?= View::escape($urlBase) ?>assets/css/app.css?v=<?= View::escape($assetVersion) ?>">
     <script src="<?= View::escape($urlBase) ?>assets/js/site.js?v=<?= View::escape($assetVersion) ?>" defer></script>
 </head>
 <body>
     <a class="skip-link" href="#main-content">Skip to main content</a>
     <header class="site-header">
-        <div class="shell header-inner">
-            <a class="identity" href="<?= View::escape($urlBase) ?>" aria-label="<?= View::escape($brandShort) ?> website home">
-                <img class="identity-logo" src="<?= View::escape($urlBase) ?>assets/images/must-logo.webp" alt="" width="56" height="56">
-                <span class="identity-copy">
-                    <strong><?= View::escape($brandShort) ?></strong>
-                    <small><?= View::escape($facultyName) ?></small>
-                </span>
-            </a>
+        <div class="header-utility-band">
+            <div class="shell header-utility-row">
+                <nav aria-label="University links">
+                    <a href="<?= View::escape($universityUrl) ?>"><?= View::escape(View::setting($settings, 'navigation.must_home', 'MUST Home')) ?></a>
+                    <a href="<?= View::escape($elearningUrl) ?>"><?= View::escape(View::setting($settings, 'navigation.elearning', 'eLearning')) ?></a>
+                    <a href="<?= View::escape($libraryUrl) ?>"><?= View::escape(View::setting($settings, 'navigation.library_short', 'Library')) ?></a>
+                </nav>
+            </div>
+        </div>
 
-            <button class="navigation-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">
-                <span>Menu</span>
-                <span class="navigation-toggle-icon" aria-hidden="true"><i></i><i></i><i></i></span>
-            </button>
+        <div class="header-identity-band">
+            <div class="shell header-identity-row">
+                <a class="identity" href="<?= View::escape($urlBase) ?>" aria-label="<?= View::escape($brandShort) ?> website home">
+                    <img class="identity-logo" src="<?= View::escape($urlBase) ?>assets/images/must-logo.webp" alt="" width="104" height="104">
+                    <span class="identity-copy">
+                       <strong class="identity-name"><?= View::escape($facultyName) ?></strong>
+                         <!-- <span class="identity-acronym"><?= View::escape($brandShort) ?></span>
+                    </span> -->
+                </a>
 
-            <nav class="primary-navigation" id="primary-navigation" aria-label="Primary navigation">
+                <button class="navigation-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">
+                    <span>Menu</span>
+                    <span class="navigation-toggle-icon" aria-hidden="true"><i></i><i></i><i></i></span>
+                </button>
+            </div>
+        </div>
+
+        <div class="header-motto-band"><div class="shell"><strong><?= View::escape(View::setting($settings, 'identity.motto', 'Succeed We Must')) ?></strong></div></div>
+
+        <div class="header-navigation-band">
+            <div class="shell header-navigation-row">
+                <nav class="primary-navigation" id="primary-navigation" aria-label="Primary navigation">
+                <a class="nav-link" <?= $path === '/' ? 'aria-current="page"' : '' ?> href="<?= View::escape($urlBase) ?>">Home</a>
+
+                <details class="nav-group"<?= $sectionPath === 'about' ? ' data-current="true"' : '' ?>>
+                    <summary><?= View::escape(View::setting($settings, 'navigation.about', 'About FAST')) ?></summary>
+                    <div class="nav-submenu">
+                        <?php foreach ([
+                            'faculty-overview' => 'Faculty Overview',
+                            'history-of-the-faculty' => 'History of the Faculty',
+                            'deans-message' => 'Dean\'s Message',
+                            'vision-and-mission' => 'Vision and Mission',
+                            'core-values' => 'Core Values',
+                        ] as $aboutSlug => $aboutLabel): ?>
+                            <a <?= $path === '/about/' . $aboutSlug ? 'aria-current="page"' : '' ?> href="<?= View::escape($urlBase) ?>about/<?= View::escape($aboutSlug) ?>"><?= View::escape($aboutLabel) ?></a>
+                        <?php endforeach; ?>
+                    </div>
+                </details>
+
                 <details class="nav-group"<?= $sectionPath === 'programmes' ? ' data-current="true"' : '' ?>>
                     <summary><?= View::escape(View::setting($settings, 'navigation.programmes', 'Programmes')) ?></summary>
                     <div class="nav-submenu nav-submenu-programmes">
                         <a <?= $pathStartsWith('/programmes') && $activeProgrammeCategory === '' ? 'aria-current="page"' : '' ?> href="<?= View::escape($urlBase) ?>programmes"><?= View::escape(View::setting($settings, 'navigation.all_programmes', 'All programmes')) ?></a>
-                        <div class="nav-subgroup">
-                            <a class="nav-subgroup-trigger" <?= $activeProgrammeCategory === 'undergraduate' ? 'aria-current="page"' : '' ?> href="<?= View::escape($urlBase) ?>programmes?category=undergraduate" aria-haspopup="true">
-                                <span><?= View::escape(View::setting($settings, 'navigation.undergraduate', 'Undergraduate programmes')) ?></span><span aria-hidden="true">›</span>
-                            </a>
-                            <div class="nav-subgroup-menu" aria-label="Undergraduate programmes">
-                                <a class="nav-subgroup-all" href="<?= View::escape($urlBase) ?>programmes?category=undergraduate">View all undergraduate programmes</a>
-                                <?php foreach ($undergraduateProgrammes as $programme): ?>
-                                    <a <?= $path === '/programmes/' . $programme['slug'] ? 'aria-current="page"' : '' ?> href="<?= View::escape($urlBase) ?>programmes/<?= View::escape($programme['slug']) ?>"><?= View::escape($programme['name']) ?></a>
-                                <?php endforeach; ?>
-                            </div>
-                        </div>
-                        <div class="nav-subgroup">
-                            <a class="nav-subgroup-trigger" <?= $activeProgrammeCategory === 'postgraduate' ? 'aria-current="page"' : '' ?> href="<?= View::escape($urlBase) ?>programmes?category=postgraduate" aria-haspopup="true">
-                                <span><?= View::escape(View::setting($settings, 'navigation.postgraduate', 'Postgraduate programmes')) ?></span><span aria-hidden="true">›</span>
-                            </a>
-                            <div class="nav-subgroup-menu" aria-label="Postgraduate programmes">
-                                <a class="nav-subgroup-all" href="<?= View::escape($urlBase) ?>programmes?category=postgraduate">View all postgraduate programmes</a>
-                                <?php if ($postgraduateProgrammes === []): ?>
-                                    <p class="nav-subgroup-empty">No postgraduate programmes are published yet.</p>
-                                <?php else: ?>
-                                    <?php foreach ($postgraduateProgrammes as $programme): ?>
-                                        <a <?= $path === '/programmes/' . $programme['slug'] ? 'aria-current="page"' : '' ?> href="<?= View::escape($urlBase) ?>programmes/<?= View::escape($programme['slug']) ?>"><?= View::escape($programme['name']) ?></a>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
-                            </div>
-                        </div>
+                        <a <?= $activeProgrammeCategory === 'undergraduate' ? 'aria-current="page"' : '' ?> href="<?= View::escape($urlBase) ?>programmes?category=undergraduate"><?= View::escape(View::setting($settings, 'navigation.undergraduate', 'Undergraduate programmes')) ?></a>
+                        <a <?= $activeProgrammeCategory === 'postgraduate' ? 'aria-current="page"' : '' ?> href="<?= View::escape($urlBase) ?>programmes?category=postgraduate"><?= View::escape(View::setting($settings, 'navigation.postgraduate', 'Postgraduate programmes')) ?></a>
                     </div>
                 </details>
 
@@ -160,8 +171,28 @@ $isSectionLanding = $section !== null && match ($sectionPath) {
                     </div>
                 </details>
 
-                <a class="nav-link" <?= $pathStartsWith('/staff') ? 'aria-current="page"' : '' ?> href="<?= View::escape($urlBase) ?>staff"><?= View::escape(View::setting($settings, 'navigation.people', 'People')) ?></a>
-                <a class="nav-link" <?= $pathStartsWith('/engagement', '/impact') ? 'aria-current="page"' : '' ?> href="<?= View::escape($urlBase) ?>engagement"><?= View::escape(View::setting($settings, 'navigation.engagement', 'Engagement')) ?></a>
+                <a class="nav-link" <?= $pathStartsWith('/staff') ? 'aria-current="page"' : '' ?> href="<?= View::escape($urlBase) ?>staff"><?= View::escape(View::setting($settings, 'navigation.staff', 'Our Staff')) ?></a>
+                <details class="nav-group"<?= $pathStartsWith('/engagement', '/impact', '/industrial-training', '/community-outreach', '/partnerships', '/engineering-education') ? ' data-current="true"' : '' ?>>
+                    <summary><?= View::escape(View::setting($settings, 'navigation.partnerships', 'Partnerships')) ?></summary>
+                    <div class="nav-submenu nav-submenu-wide">
+                        <a href="<?= View::escape($urlBase) ?>engagement">Partnerships and impact</a>
+                        <a href="<?= View::escape($urlBase) ?>industrial-training">Industrial training</a>
+                        <a href="<?= View::escape($urlBase) ?>community-outreach">Community outreach</a>
+                        <a href="<?= View::escape($urlBase) ?>partnerships">Our partnerships</a>
+                        <a href="<?= View::escape($urlBase) ?>engineering-education">Engineering education</a>
+                    </div>
+                </details>
+
+                <details class="nav-group"<?= $pathStartsWith('/student-life', '/professional-bodies', '/student-mentorship-programme', '/faculty-mentorship-programme', '/meet-our-mentors') ? ' data-current="true"' : '' ?>>
+                    <summary>Student Life</summary>
+                    <div class="nav-submenu nav-submenu-end">
+                        <a href="<?= View::escape($urlBase) ?>student-life">Student experience</a>
+                        <a href="<?= View::escape($urlBase) ?>professional-bodies">Professional bodies</a>
+                        <a href="<?= View::escape($urlBase) ?>student-mentorship-programme">Student mentorship</a>
+                        <a href="<?= View::escape($urlBase) ?>faculty-mentorship-programme">Faculty mentorship</a>
+                        <a href="<?= View::escape($urlBase) ?>meet-our-mentors">Meet our mentors</a>
+                    </div>
+                </details>
 
                 <details class="nav-group"<?= $sectionPath === 'news' ? ' data-current="true"' : '' ?>>
                     <summary><?= View::escape(View::setting($settings, 'navigation.news_events', 'News & Events')) ?></summary>
@@ -180,6 +211,7 @@ $isSectionLanding = $section !== null && match ($sectionPath) {
                     </div>
                 </details>
             </nav>
+            </div>
         </div>
     </header>
 
@@ -199,7 +231,7 @@ $isSectionLanding = $section !== null && match ($sectionPath) {
         <?= $content ?>
     </main>
 
-    <footer class="site-footer">
+    <footer class="site-footer" id="site-footer">
         <div class="shell footer-grid">
             <div class="footer-identity">
                 <img class="footer-logo" src="<?= View::escape($urlBase) ?>assets/images/must-logo.webp" alt="" width="64" height="64">
@@ -213,6 +245,7 @@ $isSectionLanding = $section !== null && match ($sectionPath) {
             <nav class="footer-navigation" aria-label="Footer navigation">
                 <div>
                     <h2><?= View::escape(View::setting($settings, 'navigation.footer_explore', 'Explore')) ?></h2>
+                    <a href="<?= View::escape($urlBase) ?>about/faculty-overview">About FAST</a>
                     <a href="<?= View::escape($urlBase) ?>programmes">Programmes</a>
                     <a href="<?= View::escape($urlBase) ?>departments">Departments</a>
                     <a href="<?= View::escape($urlBase) ?>staff">People</a>
@@ -226,6 +259,8 @@ $isSectionLanding = $section !== null && match ($sectionPath) {
                 <div>
                     <h2><?= View::escape(View::setting($settings, 'navigation.footer_connect', 'Connect')) ?></h2>
                     <a href="<?= View::escape($urlBase) ?>engagement">Engagement</a>
+                    <a href="<?= View::escape($urlBase) ?>student-life">Student life</a>
+                    <a href="<?= View::escape($urlBase) ?>student-mentorship-programme">Mentorship</a>
                     <a href="<?= View::escape($urlBase) ?>news">News</a>
                     <a href="<?= View::escape($urlBase) ?>events">Events</a>
                 </div>

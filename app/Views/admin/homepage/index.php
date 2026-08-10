@@ -43,6 +43,7 @@ use FastWebsite\Core\View;
                 <div class="form-field"><label>Label</label><input name="label" required maxlength="120" value="<?= View::escape($link['label']) ?>"></div>
                 <div class="form-field"><label>Description</label><input name="description" maxlength="255" value="<?= View::escape($link['description']) ?>"></div>
                 <div class="form-field"><label>URL</label><input name="link_url" required maxlength="500" value="<?= View::escape($link['link_url']) ?>"></div>
+                <div class="form-field"><label>Collage image</label><select name="media_id"><option value="">Use an automatic faculty image</option><?php foreach ($images as $image): ?><option value="<?= (int) $image['id'] ?>" <?= (int) ($link['media_id'] ?? 0) === (int) $image['id'] ? 'selected' : '' ?>><?= View::escape($image['original_name']) ?></option><?php endforeach; ?></select><small>The first three distinct images form the homepage collage.</small></div>
                 <div class="form-grid">
                     <div class="form-field"><label>Order</label><input name="display_order" type="number" min="0" max="32767" value="<?= (int) $link['display_order'] ?>"></div>
                     <div class="form-field"><label>Visibility</label><select name="is_active"><option value="1" <?= (int) $link['is_active'] === 1 ? 'selected' : '' ?>>Visible</option><option value="0" <?= (int) $link['is_active'] === 0 ? 'selected' : '' ?>>Hidden</option></select></div>

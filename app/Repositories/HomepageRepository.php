@@ -46,7 +46,10 @@ final class HomepageRepository
     {
         $where = $includeDisabled ? '1=1' : 'is_active = 1';
         return $this->db->connection()->query(
-            'SELECT * FROM homepage_quick_links WHERE ' . $where . ' ORDER BY display_order, id'
+            'SELECT q.*, m.file_path AS image_path, m.alt_text AS image_alt_text
+             FROM homepage_quick_links q
+             LEFT JOIN media m ON m.id = q.media_id AND m.status = "active" AND m.deleted_at IS NULL
+             WHERE ' . $where . ' ORDER BY q.display_order, q.id'
         )->fetchAll();
     }
 
@@ -64,9 +67,11 @@ final class HomepageRepository
     /** @param array<string,mixed> $data */
     public function updateQuickLink(int $id, array $data): void
     {
+        $data['media_id'] = $data['media_id'] ?? null;
         $statement = $this->db->connection()->prepare(
             'UPDATE homepage_quick_links SET label = :label, description = :description,
-                    link_url = :link_url, display_order = :display_order, is_active = :is_active
+                    link_url = :link_url, media_id = :media_id,
+                    display_order = :display_order, is_active = :is_active
              WHERE id = :id'
         );
         $statement->execute([...$data, 'id' => $id]);

@@ -115,7 +115,6 @@ $currentHeroUrl = $currentHeroPath !== ''
                 'vision' => 'Vision',
                 'mission' => 'Mission',
                 'strategic_direction' => 'Strategic direction',
-                'hod_message' => 'Head of department message',
             ] as $field => $label): ?>
                 <div class="form-field span-2">
                     <label for="<?= View::escape($field) ?>"><?= View::escape($label) ?></label>

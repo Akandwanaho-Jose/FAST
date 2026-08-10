@@ -45,6 +45,26 @@ final class ProgrammeRepository
         )->fetchAll();
     }
 
+    /** @return array{all:int,undergraduate:int,postgraduate:int} */
+    public function publicCategoryCounts(): array
+    {
+        $row = $this->connection()->query(
+            'SELECT COUNT(*) AS all_count,
+                    SUM(CASE WHEN pl.code = "UG" THEN 1 ELSE 0 END) AS undergraduate_count,
+                    SUM(CASE WHEN pl.code IN ("PGD", "MASTERS", "PHD") THEN 1 ELSE 0 END) AS postgraduate_count
+             FROM programmes p
+             INNER JOIN programme_levels pl ON pl.id = p.programme_level_id
+             WHERE p.status = "published" AND p.published_at IS NOT NULL
+               AND p.published_at <= NOW() AND p.deleted_at IS NULL'
+        )->fetch();
+
+        return [
+            'all' => (int) ($row['all_count'] ?? 0),
+            'undergraduate' => (int) ($row['undergraduate_count'] ?? 0),
+            'postgraduate' => (int) ($row['postgraduate_count'] ?? 0),
+        ];
+    }
+
     /** @return list<array<string,mixed>> */
     public function activeImages(): array
     {

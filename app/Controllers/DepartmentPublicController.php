@@ -68,9 +68,6 @@ final class DepartmentPublicController extends Controller
                 'currentPath' => $request->path(),
                 'baseUrl' => $request->baseUrl(),
                 'department' => $department,
-                'headOfDepartment' => $this->departments->findPublishedHead(
-                    (int) $department['id']
-                ),
                 'programmes' => $this->departments->publishedProgrammes(
                     (int) $department['id']
                 ),

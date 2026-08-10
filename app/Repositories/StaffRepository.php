@@ -53,6 +53,49 @@ final class StaffRepository
         )->fetchAll();
     }
 
+    /** @return list<array{id:int,name:string}> */
+    public function expertiseAreas(): array
+    {
+        return $this->connection()->query(
+            'SELECT id, name FROM expertise_areas
+             WHERE status = "active" ORDER BY name'
+        )->fetchAll();
+    }
+
+    /** @return list<array<string,mixed>> */
+    public function adminQualifications(int $staffId): array
+    {
+        $statement = $this->connection()->prepare(
+            'SELECT qualification, field_of_study, institution, country, completion_year
+             FROM staff_qualifications WHERE staff_id = :staff
+             ORDER BY display_order, completion_year DESC, id'
+        );
+        $statement->execute(['staff' => $staffId]);
+        return $statement->fetchAll();
+    }
+
+    /** @return list<array<string,mixed>> */
+    public function adminLinks(int $staffId): array
+    {
+        $statement = $this->connection()->prepare(
+            'SELECT link_type, label, url FROM staff_links
+             WHERE staff_id = :staff ORDER BY display_order, id'
+        );
+        $statement->execute(['staff' => $staffId]);
+        return $statement->fetchAll();
+    }
+
+    /** @return list<int> */
+    public function adminExpertiseIds(int $staffId): array
+    {
+        $statement = $this->connection()->prepare(
+            'SELECT expertise_area_id FROM staff_expertise
+             WHERE staff_id = :staff ORDER BY is_primary DESC, display_order, expertise_area_id'
+        );
+        $statement->execute(['staff' => $staffId]);
+        return array_map('intval', array_column($statement->fetchAll(), 'expertise_area_id'));
+    }
+
     /** @return array{items:list<array<string,mixed>>,total:int,page:int,pages:int} */
     public function paginateAdmin(
         int $userId,
@@ -238,6 +281,30 @@ final class StaffRepository
         )->fetchAll();
     }
 
+    /** @return list<array<string,mixed>> */
+    public function publicPortraits(int $limit = 30): array
+    {
+        $limit = max(3, min(60, $limit));
+        return $this->connection()->query(sprintf(
+            'SELECT s.id, s.honorific_title, s.first_name, s.middle_name,
+                    s.last_name, s.slug, m.file_path AS profile_path,
+                    m.alt_text AS profile_alt_text,
+                    COALESCE(sp.title_override, p.name) AS position_title
+             FROM staff s
+             INNER JOIN media m ON m.id = s.profile_media_id
+                AND m.media_type = "image" AND m.status = "active"
+                AND m.deleted_at IS NULL
+             LEFT JOIN staff_positions sp ON sp.staff_id = s.id AND sp.is_current = 1
+             LEFT JOIN positions p ON p.id = sp.position_id
+             WHERE s.status = "published" AND s.published_at IS NOT NULL
+               AND s.published_at <= NOW() AND s.deleted_at IS NULL
+             GROUP BY s.id
+             ORDER BY s.display_order, s.last_name, s.first_name
+             LIMIT %d',
+            $limit
+        ))->fetchAll();
+    }
+
     /** @return array{items:list<array<string,mixed>>,total:int,page:int,pages:int} */
     public function paginatePublished(
         string $search,
@@ -313,6 +380,7 @@ final class StaffRepository
             'SELECT s.id, s.honorific_title, s.first_name, s.middle_name,
                     s.last_name, s.post_nominals, s.slug, s.staff_category,
                     s.short_biography, s.supervision_available,
+                    s.institutional_email, s.public_phone,
                     m.file_path AS profile_path, m.alt_text AS profile_alt_text,
                     d.name AS department_name, d.slug AS department_slug,
                     COALESCE(sp.title_override, p.name) AS position_title,
@@ -435,15 +503,17 @@ final class StaffRepository
 
     public function relationExists(string $table, int $id): bool
     {
-        $allowed = ['faculties', 'departments', 'positions', 'locations', 'media'];
+        $allowed = ['faculties', 'departments', 'positions', 'locations', 'media', 'expertise_areas'];
         if (!in_array($table, $allowed, true)) {
             return false;
         }
         $extra = $table === 'media'
             ? ' AND media_type = "image" AND status = "active" AND deleted_at IS NULL'
+            : ($table === 'expertise_areas'
+                ? ' AND status = "active"'
             : ($table === 'faculties' || $table === 'departments'
                 ? ' AND deleted_at IS NULL'
-                : '');
+                : ''));
         $statement = $this->connection()->prepare(
             sprintf('SELECT 1 FROM %s WHERE id = :id%s LIMIT 1', $table, $extra)
         );
@@ -562,6 +632,69 @@ final class StaffRepository
                 'department_id' => $departmentId,
                 'title_override' => $titleOverride,
             ]);
+        }
+    }
+
+    /** @param array{qualifications?:list<array<string,mixed>>,links?:list<array<string,mixed>>,expertise_ids?:list<int>} $relations */
+    public function replaceProfileRelations(int $staffId, array $relations): void
+    {
+        if (array_key_exists('qualifications', $relations)) {
+            $this->connection()->prepare('DELETE FROM staff_qualifications WHERE staff_id = :staff')
+                ->execute(['staff' => $staffId]);
+            $insert = $this->connection()->prepare(
+                'INSERT INTO staff_qualifications
+                    (staff_id, qualification, field_of_study, institution, country,
+                     completion_year, display_order)
+                 VALUES
+                    (:staff, :qualification, :field, :institution, :country, :year, :display_order)'
+            );
+            foreach ($relations['qualifications'] ?? [] as $order => $qualification) {
+                $insert->execute([
+                    'staff' => $staffId,
+                    'qualification' => $qualification['qualification'],
+                    'field' => $qualification['field_of_study'],
+                    'institution' => $qualification['institution'],
+                    'country' => $qualification['country'],
+                    'year' => $qualification['completion_year'],
+                    'display_order' => $order,
+                ]);
+            }
+        }
+
+        if (array_key_exists('links', $relations)) {
+            $this->connection()->prepare('DELETE FROM staff_links WHERE staff_id = :staff')
+                ->execute(['staff' => $staffId]);
+            $insert = $this->connection()->prepare(
+                'INSERT INTO staff_links (staff_id, link_type, label, url, display_order)
+                 VALUES (:staff, :type, :label, :url, :display_order)'
+            );
+            foreach ($relations['links'] ?? [] as $order => $link) {
+                $insert->execute([
+                    'staff' => $staffId,
+                    'type' => $link['link_type'],
+                    'label' => $link['label'],
+                    'url' => $link['url'],
+                    'display_order' => $order,
+                ]);
+            }
+        }
+
+        if (array_key_exists('expertise_ids', $relations)) {
+            $this->connection()->prepare('DELETE FROM staff_expertise WHERE staff_id = :staff')
+                ->execute(['staff' => $staffId]);
+            $insert = $this->connection()->prepare(
+                'INSERT INTO staff_expertise
+                    (staff_id, expertise_area_id, is_primary, display_order)
+                 VALUES (:staff, :expertise, :primary, :display_order)'
+            );
+            foreach ($relations['expertise_ids'] ?? [] as $order => $expertiseId) {
+                $insert->execute([
+                    'staff' => $staffId,
+                    'expertise' => $expertiseId,
+                    'primary' => $order === 0 ? 1 : 0,
+                    'display_order' => $order,
+                ]);
+            }
         }
     }
 

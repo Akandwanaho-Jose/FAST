@@ -16,6 +16,32 @@ final class EngagementRepository
     /** @return list<array<string,mixed>> */public function images():array{return$this->pdo()->query('SELECT id,original_name FROM media WHERE media_type="image" AND status="active" AND deleted_at IS NULL ORDER BY original_name')->fetchAll();}
     /** @return list<array<string,mixed>> */public function documents():array{return$this->pdo()->query('SELECT id,title FROM documents WHERE deleted_at IS NULL AND status="published" ORDER BY title')->fetchAll();}
     /** @return list<array<string,mixed>> */public function partnerships(bool$public=false):array{$where=$public?'p.status="published" AND p.published_at IS NOT NULL AND p.published_at<=NOW()':'1=1';return$this->pdo()->query('SELECT p.*,o.name AS partner_name,o.partner_type,o.country,o.website_url,o.logo_media_id,f.name AS faculty_name,d.file_path AS document_path FROM partnerships p INNER JOIN partners o ON o.id=p.partner_id LEFT JOIN faculties f ON f.id=p.faculty_id LEFT JOIN documents d ON d.id=p.document_id AND d.status="published" AND d.is_public=1 AND d.deleted_at IS NULL WHERE '.$where.' ORDER BY p.start_date DESC,p.title')->fetchAll();}
+    /** @return list<array<string,mixed>> */
+    public function publicEngagementPages(): array
+    {
+        return $this->pdo()->query(
+            'SELECT p.title, p.slug, p.meta_description,
+                    m.file_path AS hero_path, m.alt_text AS hero_alt_text
+             FROM pages p
+             LEFT JOIN media m ON m.id = p.hero_media_id
+                AND m.status = "active" AND m.deleted_at IS NULL
+             WHERE p.slug IN ("industrial-training", "community-outreach", "partnerships", "engineering-education")
+               AND p.status = "published" AND p.published_at IS NOT NULL
+               AND p.published_at <= NOW() AND p.deleted_at IS NULL
+             ORDER BY FIELD(p.slug, "industrial-training", "community-outreach", "partnerships", "engineering-education")'
+        )->fetchAll();
+    }
+    /** @return list<array<string,mixed>> */
+    public function engagementPages(): array
+    {
+        return $this->pdo()->query(
+            'SELECT id, title, slug, meta_description, status, updated_at
+             FROM pages
+             WHERE slug IN ("industrial-training", "community-outreach", "partnerships", "engineering-education")
+               AND deleted_at IS NULL
+             ORDER BY FIELD(slug, "industrial-training", "community-outreach", "partnerships", "engineering-education")'
+        )->fetchAll();
+    }
     /** @return array<string,mixed>|null */public function findPartnership(int$id):?array{$s=$this->pdo()->prepare('SELECT * FROM partnerships WHERE id=:id LIMIT 1');$s->execute(['id'=>$id]);$r=$s->fetch();return is_array($r)?$r:null;}
     /** @param array<string,mixed>$data */public function savePartnership(?int$id,array$data):int{return$this->save('partnerships',$id,$data,true);}
     public function partnershipStatus(int$id,string$status):void{$published=$status==='published'?',published_at=NOW()':($status==='draft'?',published_at=NULL':'');$s=$this->pdo()->prepare('UPDATE partnerships SET status=:status'.$published.' WHERE id=:id');$s->execute(['status'=>$status,'id'=>$id]);}

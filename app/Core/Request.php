@@ -8,7 +8,7 @@ final class Request
 {
     /**
      * @param array<string, string> $query
-     * @param array<string, string> $body
+     * @param array<string, mixed> $body
      * @param array<string, array<string, mixed>> $files
      */
     public function __construct(
@@ -52,10 +52,10 @@ final class Request
             static fn (mixed $value): bool => is_string($value)
         );
 
-        /** @var array<string, string> $body */
+        /** @var array<string, mixed> $body */
         $body = array_filter(
             $_POST,
-            static fn (mixed $value): bool => is_string($value)
+            static fn (mixed $value): bool => is_string($value) || is_array($value)
         );
 
         /** @var array<string, array<string, mixed>> $files */
@@ -99,7 +99,15 @@ final class Request
 
     public function input(string $key, ?string $default = null): ?string
     {
-        return $this->body[$key] ?? $default;
+        $value = $this->body[$key] ?? null;
+        return is_string($value) ? $value : $default;
+    }
+
+    /** @return array<mixed> */
+    public function arrayInput(string $key): array
+    {
+        $value = $this->body[$key] ?? null;
+        return is_array($value) ? $value : [];
     }
 
     /**

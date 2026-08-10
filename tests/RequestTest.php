@@ -10,7 +10,7 @@ return static function (): void {
         '/login',
         ['next' => 'admin'],
         '/fast/public',
-        ['email' => 'user@example.invalid'],
+        ['email' => 'user@example.invalid', 'links' => [['url' => 'https://example.invalid']]],
         '127.0.0.1',
         'Test agent'
     );
@@ -19,6 +19,8 @@ return static function (): void {
         || $request->query('next') !== 'admin'
         || $request->baseUrl() !== '/fast/public/'
         || $request->ipAddress() !== '127.0.0.1'
+        || $request->input('links') !== null
+        || $request->arrayInput('links')[0]['url'] !== 'https://example.invalid'
     ) {
         throw new RuntimeException('Request data was not represented correctly.');
     }

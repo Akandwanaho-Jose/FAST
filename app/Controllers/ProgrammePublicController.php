@@ -41,6 +41,7 @@ final class ProgrammePublicController extends Controller
             'categoryFilter' => $category,
             'departmentFilter' => $department,
             'departments' => $departments,
+            'categoryCounts' => $this->programmes->publicCategoryCounts(),
             'result' => $this->programmes->paginatePublished($search, $category, $department, $page),
         ]);
     }

@@ -314,6 +314,9 @@ final class DepartmentAdminController extends Controller
         }
 
         $values = $this->formValues($request);
+        // The legacy message is no longer editable or public, but retaining its
+        // value avoids destructive data loss during unrelated department edits.
+        $values['hod_message'] = $department['hod_message'];
         $validation = $this->validator->validate($values, $id);
         $uploadValidation = $this->mediaUploads->validate(
             $request->file('hero_image'),

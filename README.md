@@ -31,7 +31,15 @@ landing-page introductions are managed through **Administration → Site content
    ```powershell
    php database/seeds/site-settings.php
    php database/seeds/homepage-sections.php
+   php database/seeds/about-pages.php
+   php database/seeds/page-hero-images.php
+   php database/seeds/about-page-sections.php
+   php database/seeds/deans-office-content-2026.php
    ```
+
+   The Dean's Office importer is safe to rerun. It updates authoritative copy
+   by stable slug, keeps approved programmes public, stores proposed programmes
+   as drafts, and preserves editor-managed media and curricula.
 
 5. Verify the application:
 
@@ -62,4 +70,3 @@ uploads, runtime logs, or cache files.
 Run the unit suite with `php tests/run.php`. Database-backed integration tests
 are available through `php tests/integration/run.php` and require a configured
 local test database.
-

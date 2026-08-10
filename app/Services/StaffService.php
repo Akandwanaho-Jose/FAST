@@ -28,10 +28,17 @@ final class StaffService
     }
 
     /** @param array<string,mixed> $data @param array<string,mixed> $assignment */
-    public function create(array $data, array $assignment, int $userId, string $ip, string $agent): int
+    public function create(
+        array $data,
+        array $assignment,
+        int $userId,
+        string $ip,
+        string $agent,
+        array $relations = []
+    ): int
     {
         $this->requireGlobal($userId, 'staff.create');
-        return $this->transaction(function () use ($data, $assignment, $userId, $ip, $agent): int {
+        return $this->transaction(function () use ($data, $assignment, $userId, $ip, $agent, $relations): int {
             $id = $this->staff->create($data);
             $this->staff->replaceAssignment(
                 $id,
@@ -40,7 +47,8 @@ final class StaffService
                 $assignment['title_override'],
                 (int) $data['faculty_id']
             );
-            $this->staff->recordRevision($id, null, [...$data, ...$assignment], $userId, 'Initial staff profile');
+            $this->staff->replaceProfileRelations($id, $relations);
+            $this->staff->recordRevision($id, null, [...$data, ...$assignment, 'relations' => $relations], $userId, 'Initial staff profile');
             $this->audit->record($userId, 'staff.created', 'staff', $id, $ip, $agent, ['status' => 'draft']);
             return $id;
         });
@@ -52,16 +60,17 @@ final class StaffService
         array $assignment,
         int $userId,
         string $ip,
-        string $agent
+        string $agent,
+        array $relations = []
     ): int {
-        return $this->transaction(function () use ($data, $assignment, $userId, $ip, $agent): int {
+        return $this->transaction(function () use ($data, $assignment, $userId, $ip, $agent, $relations): int {
             if (!$this->canDirectPublish($userId)) {
                 throw new HttpException(
                     403,
                     'You do not have all permissions required to publish directly.'
                 );
             }
-            $id = $this->create($data, $assignment, $userId, $ip, $agent);
+            $id = $this->create($data, $assignment, $userId, $ip, $agent, $relations);
             $this->publishDraft(
                 $id,
                 $userId,
@@ -81,10 +90,11 @@ final class StaffService
         int $userId,
         string $note,
         string $ip,
-        string $agent
+        string $agent,
+        array $relations = []
     ): void {
         $this->requireGlobal($userId, 'staff.edit');
-        $this->transaction(function () use ($id, $data, $assignment, $userId, $note, $ip, $agent): void {
+        $this->transaction(function () use ($id, $data, $assignment, $userId, $note, $ip, $agent, $relations): void {
             $previous = $this->staff->findForUpdate($id);
             if ($previous === null) {
                 throw new HttpException(404, 'Staff profile not found.');
@@ -100,10 +110,11 @@ final class StaffService
                 $assignment['title_override'],
                 (int) $data['faculty_id']
             );
+            $this->staff->replaceProfileRelations($id, $relations);
             $this->staff->recordRevision(
                 $id,
                 $previous,
-                [...$data, ...$assignment],
+                [...$data, ...$assignment, 'relations' => $relations],
                 $userId,
                 $note !== '' ? $note : 'Staff profile updated'
             );
@@ -119,7 +130,8 @@ final class StaffService
         int $userId,
         string $note,
         string $ip,
-        string $agent
+        string $agent,
+        array $relations = []
     ): void {
         if (!$this->canDirectPublish($userId)) {
             throw new HttpException(
@@ -127,7 +139,7 @@ final class StaffService
                 'Editing published profiles requires staff publishing access.'
             );
         }
-        $this->transaction(function () use ($id, $data, $assignment, $userId, $note, $ip, $agent): void {
+        $this->transaction(function () use ($id, $data, $assignment, $userId, $note, $ip, $agent, $relations): void {
             $previous = $this->staff->findForUpdate($id);
             if ($previous === null) {
                 throw new HttpException(404, 'Staff profile not found.');
@@ -152,10 +164,11 @@ final class StaffService
                 $assignment['title_override'],
                 (int) $data['faculty_id']
             );
+            $this->staff->replaceProfileRelations($id, $relations);
             $this->staff->recordRevision(
                 $id,
                 $previous,
-                [...$data, ...$assignment, 'status' => 'published'],
+                [...$data, ...$assignment, 'relations' => $relations, 'status' => 'published'],
                 $userId,
                 $note !== '' ? $note : 'Published staff profile updated'
             );
@@ -179,10 +192,11 @@ final class StaffService
         int $userId,
         string $note,
         string $ip,
-        string $agent
+        string $agent,
+        array $relations = []
     ): void {
-        $this->transaction(function () use ($id, $data, $assignment, $userId, $note, $ip, $agent): void {
-            $this->update($id, $data, $assignment, $userId, $note, $ip, $agent);
+        $this->transaction(function () use ($id, $data, $assignment, $userId, $note, $ip, $agent, $relations): void {
+            $this->update($id, $data, $assignment, $userId, $note, $ip, $agent, $relations);
             $this->publishDraft($id, $userId, 'Direct publication.', $ip, $agent);
         });
     }

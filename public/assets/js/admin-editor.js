@@ -63,4 +63,36 @@
         wrapper.append(toolbar, editor, count); textarea.dataset.wasRequired = textarea.required ? 'true' : 'false'; textarea.hidden = true; textarea.removeAttribute('required'); textarea.insertAdjacentElement('afterend', wrapper); sync();
         textarea.form?.addEventListener('submit', (event) => { sync(); if (textarea.dataset.wasRequired === 'true' && textarea.value === '') { event.preventDefault(); editor.focus(); } });
     });
+
+    document.querySelectorAll('[data-repeatable]').forEach((section) => {
+        const list = section.querySelector('[data-repeatable-list]');
+        const template = section.querySelector('[data-repeatable-template]');
+        const add = section.querySelector('[data-repeatable-add]');
+        if (!list || !template || !add) return;
+
+        const bindRemove = (row) => {
+            row.querySelector('[data-repeatable-remove]')?.addEventListener('click', () => {
+                const rows = list.querySelectorAll('[data-repeatable-row]');
+                if (rows.length === 1) {
+                    row.querySelectorAll('input').forEach((input) => { input.value = ''; });
+                    row.querySelectorAll('select').forEach((select) => { select.selectedIndex = 0; });
+                    return;
+                }
+                row.remove();
+            });
+        };
+
+        list.querySelectorAll('[data-repeatable-row]').forEach(bindRemove);
+        add.addEventListener('click', () => {
+            const index = Number(list.dataset.nextIndex || list.children.length);
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = template.innerHTML.replaceAll('__INDEX__', String(index)).trim();
+            const row = wrapper.firstElementChild;
+            if (!row) return;
+            list.append(row);
+            list.dataset.nextIndex = String(index + 1);
+            bindRemove(row);
+            row.querySelector('input,select')?.focus();
+        });
+    });
 }());

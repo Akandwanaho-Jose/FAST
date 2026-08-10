@@ -18,17 +18,41 @@ return static function (): void {
                 'button_url' => null, 'text_alignment' => 'centre', 'overlay_strength' => 40],
         ],
         'counts' => ['programmes' => 5, 'departments' => 5, 'staff' => 46, 'research' => 0],
-        'announcements' => [], 'programmes' => [], 'departments' => [],
+        'announcements' => [], 'programmes' => [], 'departments' => [
+            ['hero_path' => 'public/assets/images/department-1.jpg'],
+            ['hero_path' => 'public/assets/images/department-2.jpg'],
+            ['hero_path' => 'public/assets/images/department-3.jpg'],
+            ['hero_path' => 'public/assets/images/department-4.jpg'],
+        ],
         'news' => [], 'events' => [], 'innovations' => [], 'impacts' => [],
     ], null);
 
-    foreach (['data-carousel', 'data-carousel-pause', 'aria-label="2 of 2"',
-        'home-quick-action-grid', 'Academic programmes', 'Staff profiles',
-        'Choose your study pathway', 'home-admissions-cta', 'Research and innovation'] as $fragment
+    foreach (['data-carousel', 'aria-label="2 of 2"',
+        'home-quick-visual-grid', 'home-quick-link-grid', 'data-why-gallery',
+        'Academic programmes', 'Staff profiles',
+        'Research and innovation'] as $fragment
     ) {
         if (!str_contains($home, $fragment)) {
             throw new RuntimeException('Phase 2 homepage is missing: ' . $fragment);
         }
+    }
+
+    if (str_contains($home, 'data-carousel-pause')) {
+        throw new RuntimeException('Phase 2 homepage still renders the removed hero pause control.');
+    }
+
+    foreach (['data-why-gallery-next', 'data-why-gallery-previous', 'home-why-gallery-controls', '<figcaption>'] as $removedFragment) {
+        if (str_contains($home, $removedFragment)) {
+            throw new RuntimeException('Phase 2 homepage still renders a removed Why FAST gallery control: ' . $removedFragment);
+        }
+    }
+
+    if (str_contains($home, 'home-study-pathways')
+        || str_contains($home, 'home-departments-showcase')
+        || str_contains($home, 'home-resources-section')
+        || str_contains($home, 'home-admissions-cta')
+    ) {
+        throw new RuntimeException('A removed duplicate homepage section was rendered.');
     }
 
     $staff = $view->render('public/staff/index', [
@@ -49,7 +73,7 @@ return static function (): void {
     ], null);
 
     foreach (['id="staff-department"', 'id="staff-category"', 'id="staff-expertise"',
-        'staff-card-placeholder', 'Available for supervision', '1</strong> staff profile'] as $fragment
+        'staff-directory-row', 'staff-row-portrait', 'Available for supervision', '1</strong> staff profile'] as $fragment
     ) {
         if (!str_contains($staff, $fragment)) {
             throw new RuntimeException('Phase 2 staff directory is missing: ' . $fragment);

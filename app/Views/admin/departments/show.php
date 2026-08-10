@@ -17,7 +17,6 @@ $contentSections = [
     'Vision' => $department['vision'],
     'Mission' => $department['mission'],
     'Strategic direction' => $department['strategic_direction'],
-    'Head of department message' => $department['hod_message'],
 ];
 $heroPath = is_string($department['hero_path'])
     ? str_replace('\\', '/', $department['hero_path'])

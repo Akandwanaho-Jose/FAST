@@ -23,33 +23,101 @@ landing-page introductions are managed through **Administration → Site content
 
 ## Local setup
 
+These steps were verified end to end (fresh clone, empty database, through to
+a working admin login) — see "About the seed data" below for what that
+verification found.
+
 1. Clone the repository and enter its directory.
-2. Copy `.env.example` to `.env` and enter local database credentials.
-3. Configure the web server document root to the `public/` directory.
-4. Initialize managed site defaults:
+2. Copy `.env.example` to `.env` and enter local database credentials. Keep
+   `DB_DATABASE=fast_website_db` — `database/schema.sql` creates and selects
+   a database with that exact name itself, regardless of what name you use
+   when invoking `mysql`, so every step below assumes that name.
+3. Configure the web server document root to the `public/` directory, with
+   Apache `mod_rewrite` enabled so the included `.htaccess` files apply.
+   PHP's built-in `php -S` server does not process `.htaccess` and will not
+   produce working clean URLs — use Apache (or another rewrite-aware server)
+   for anything beyond a quick script check.
+4. Create the database schema (run as a privileged account; the application's
+   own database user should not have `CREATE`/`ALTER` — see
+   [CONNECTIVITY.md](docs/CONNECTIVITY.md) for setting up that least-privilege
+   account):
 
    ```powershell
+   mysql -u root < database/schema.sql
+   ```
+
+5. Seed roles, permissions, the faculty, and departments. This has to happen
+   before anything else — including creating the first administrator, which
+   requires the `super_admin` role to already exist:
+
+   ```powershell
+   php database/seeds/000-rbac-and-reference-data.php
+   ```
+
+6. Create the first administrator — see
+   [AUTHENTICATION.md](docs/AUTHENTICATION.md):
+
+   ```powershell
+   php bin\create-admin.php --name="Your Name" --email="you@example.org"
+   ```
+
+7. Seed the real site content, in this order (later steps depend on earlier
+   ones — `deans-office-content-2026.php` needs an active image to already
+   exist, and `seed-handbook-batch.php` only updates programmes that already
+   exist by slug rather than creating them):
+
+   ```powershell
+   php database/seeds/homepage-hero.php
+   php database/seeds/deans-office-content-2026.php
+   php bin/seed-handbook-batch.php --apply --publish
    php database/seeds/site-settings.php
    php database/seeds/homepage-sections.php
    php database/seeds/about-pages.php
-   php database/seeds/page-hero-images.php
    php database/seeds/about-page-sections.php
-   php database/seeds/deans-office-content-2026.php
+   php database/seeds/001-staff-bio-enrichment.php
+   php database/seeds/002-website-info-guide-2026.php
    ```
 
-   The Dean's Office importer is safe to rerun. It updates authoritative copy
-   by stable slug, keeps approved programmes public, stores proposed programmes
-   as drafts, and preserves editor-managed media and curricula.
+   The Dean's Office importer and the enrichment seeds are safe to rerun —
+   they update existing rows in place by stable slug rather than duplicating
+   them.
 
-5. Verify the application:
+8. Verify the application:
 
    ```powershell
    php bin/database-check.php
    php tests/run.php
    ```
 
-Use a dedicated, least-privileged database account. Never commit `.env`, local
-uploads, runtime logs, or cache files.
+   Two failures are expected here and are not a sign of a broken setup — see
+   "About the seed data" below.
+
+Never commit `.env`, local uploads, runtime logs, or cache files.
+
+## About the seed data
+
+- `database/seeds/003-site-photography.php` onward — site photography, page
+  hero galleries, featured innovation, research agenda, research unit photos,
+  the testing placeholder photos, and the LinkedIn news posts (`009`–`013`)
+  — are **one-time historical imports, not reproducible setup steps**. They
+  read real photographs and source documents from paths that only ever
+  existed on the original importer's machine or a since-deleted temporary
+  working directory. Those paths cannot be recreated by anyone, on any
+  machine, including the one they originally ran on. They already ran once
+  against the live database; do not add them to a fresh setup, and don't be
+  surprised if running one directly fails outright.
+- Because of that, `public/uploads/` — deliberately excluded from git, since
+  it holds real uploaded photographs rather than code — is the **only
+  surviving copy** of a meaningful slice of the site's photography. If it's
+  ever lost, that photography cannot be re-seeded from anything in this
+  repository. Back it up separately and on a regular schedule; pushing this
+  repository to GitHub does not protect it.
+- On a correctly-seeded fresh install, `php tests/run.php` and
+  `php tests/integration/run.php` report exactly two failures:
+  `HandbookSeedTest` (a specific staff portrait referenced by the handbook
+  seed isn't present, for the reason above) and `MvpContentFlowTest`
+  (content that only the one-time imports above would have added). Any other
+  failure means something is genuinely wrong.
 
 ## Documentation
 

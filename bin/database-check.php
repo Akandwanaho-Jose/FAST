@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 use FastWebsite\Core\Database;
 use FastWebsite\Core\DatabaseVerifier;
+use FastWebsite\Core\Env;
 
 require dirname(__DIR__) . '/bootstrap/autoload.php';
 
 try {
     /** @var Database $database */
     $database = require dirname(__DIR__) . '/bootstrap/database.php';
-    $verifier = new DatabaseVerifier($database->connection());
+    $verifier = new DatabaseVerifier(
+        $database->connection(),
+        Env::get('DB_DATABASE', 'fast_website_db')
+    );
     $result = $verifier->verify();
 
     fwrite(

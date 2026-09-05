@@ -58,7 +58,8 @@ landing-page introductions are managed through **Administration → Site content
    order, are:
 
    ```powershell
-   mysql -u root < database/schema.sql
+   mysql -u root -e "CREATE DATABASE IF NOT EXISTS fast_website_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+   mysql -u root fast_website_db < database/schema.sql
    php database/seeds/000-rbac-and-reference-data.php
    php bin\create-admin.php --name="Your Name" --email="you@example.org"
    php database/seeds/homepage-hero.php

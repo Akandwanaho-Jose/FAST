@@ -31,6 +31,12 @@ declare(strict_types=1);
  * docs/CONNECTIVITY.md). For a local dev database where one account (often
  * root) does everything, the .env values already work and none of these
  * flags are needed.
+ *
+ * The target database itself always comes from .env's DB_DATABASE and is
+ * never overridden separately - it must already exist before this script
+ * runs (locally that's usually "fast_website_db"; on shared hosting it's
+ * whatever name the host assigned, often prefixed with your account
+ * username - create it there first, then point DB_DATABASE at that name).
  */
 
 use FastWebsite\Core\Env;
@@ -75,6 +81,14 @@ $dbHost = (string) ($options['db-host'] ?? Env::get('DB_HOST', '127.0.0.1'));
 $dbPort = (int) ($options['db-port'] ?? Env::integer('DB_PORT', 3306));
 $dbUser = (string) ($options['db-user'] ?? Env::get('DB_USERNAME', 'root'));
 $dbPassword = (string) ($options['db-password'] ?? Env::get('DB_PASSWORD', ''));
+// The database itself is never overridden separately from .env's
+// DB_DATABASE - the schema-import connection and the app's runtime
+// connection must always target the exact same database. On shared
+// hosting (e.g. cPanel) that database is created ahead of time through
+// the host's own UI, usually under an account-prefixed name rather than
+// this project's own "fast_website_db" convention - DB_DATABASE just
+// needs to already say whatever that real name is.
+$dbName = (string) Env::get('DB_DATABASE', 'fast_website_db');
 $skipContent = array_key_exists('skip-content', $options);
 
 function step(string $label): void
@@ -136,7 +150,7 @@ function runOrFail(array $command, string $cwd, ?string $stdinFile = null, bool 
     }
 }
 
-function usersTableExists(string $host, int $port, string $user, string $password): bool
+function usersTableExists(string $host, int $port, string $user, string $password, string $database): bool
 {
     try {
         $pdo = new PDO(
@@ -145,7 +159,7 @@ function usersTableExists(string $host, int $port, string $user, string $passwor
             $password,
             [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
         );
-        $statement = $pdo->query("SHOW TABLES FROM `fast_website_db` LIKE 'users'");
+        $statement = $pdo->query('SHOW TABLES FROM `' . $database . "` LIKE 'users'");
 
         return $statement !== false && $statement->fetchColumn() !== false;
     } catch (Throwable) {
@@ -163,13 +177,22 @@ try {
 
     step('Database schema');
 
-    if (usersTableExists($dbHost, $dbPort, $dbUser, $dbPassword)) {
-        note('fast_website_db already has a users table - skipping (schema.sql is not safe to rerun).');
+    if (usersTableExists($dbHost, $dbPort, $dbUser, $dbPassword, $dbName)) {
+        note('"' . $dbName . '" already has a users table - skipping (schema.sql is not safe to rerun).');
     } else {
-        note('Importing database/schema.sql via the mysql CLI...');
+        note('Importing database/schema.sql into "' . $dbName . '" via the mysql CLI...');
+        note(
+            'That database must already exist - create it first (locally: '
+            . '"CREATE DATABASE ' . $dbName . '"; on shared hosting: through the host\'s '
+            . 'database tool, e.g. cPanel\'s MySQL Databases).'
+        );
         $schemaPath = $root . '/database/schema.sql';
         runOrFail(
-            [$mysqlBinary, '-h', $dbHost, '-P', (string) $dbPort, '-u', $dbUser, ...($dbPassword !== '' ? ['-p' . $dbPassword] : [])],
+            [
+                $mysqlBinary, '-h', $dbHost, '-P', (string) $dbPort, '-u', $dbUser,
+                ...($dbPassword !== '' ? ['-p' . $dbPassword] : []),
+                $dbName,
+            ],
             $root,
             $schemaPath
         );
@@ -199,7 +222,7 @@ try {
     runOrFail([$phpBinary, 'database/seeds/deans-office-content-2026.php'], $root);
 
     $staffCount = (int) (new PDO(
-        sprintf('mysql:host=%s;port=%d;dbname=fast_website_db;charset=utf8mb4', $dbHost, $dbPort),
+        sprintf('mysql:host=%s;port=%d;dbname=%s;charset=utf8mb4', $dbHost, $dbPort, $dbName),
         $dbUser,
         $dbPassword
     ))->query('SELECT COUNT(*) FROM staff')->fetchColumn();

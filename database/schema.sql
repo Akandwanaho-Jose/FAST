@@ -78,11 +78,13 @@
 --   departments=5, roles=9, permissions=31, sdgs=17.
 -- =============================================================================
 
-CREATE DATABASE IF NOT EXISTS `fast_website_db`
-    CHARACTER SET utf8mb4
-    COLLATE utf8mb4_unicode_ci;
-
-USE `fast_website_db`;
+-- This file does NOT create or select a database - it only creates tables
+-- in whatever database the mysql client is already connected to. Run it as:
+--   mysql -u <user> -p <database_name> < database/schema.sql
+-- That works the same way on local dev and on shared hosting (e.g. cPanel),
+-- where the database must already exist under a host-assigned name (often
+-- prefixed with your account username) rather than the literal
+-- "fast_website_db" this project uses as its own convention.
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;

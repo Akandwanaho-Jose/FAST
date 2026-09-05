@@ -36,7 +36,7 @@ final class Request
         );
         $basePath = rtrim(dirname($scriptName), '/.');
 
-        if ($basePath !== '' && str_starts_with($path, $basePath)) {
+        if ($basePath !== '' && stripos($path, $basePath) === 0) {
             $path = substr($path, strlen($basePath)) ?: '/';
         }
 

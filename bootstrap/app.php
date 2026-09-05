@@ -13,9 +13,11 @@ use FastWebsite\Core\Session;
 use FastWebsite\Core\View;
 use FastWebsite\Controllers\AdminController;
 use FastWebsite\Controllers\AuthController;
+use FastWebsite\Controllers\PasswordResetController;
 use FastWebsite\Controllers\DepartmentAdminController;
 use FastWebsite\Controllers\DepartmentPublicController;
 use FastWebsite\Controllers\StaffAdminController;
+use FastWebsite\Controllers\StaffSelfServiceController;
 use FastWebsite\Controllers\StaffPublicController;
 use FastWebsite\Controllers\ProgrammeAdminController;
 use FastWebsite\Controllers\ProgrammePublicController;
@@ -35,6 +37,7 @@ use FastWebsite\Controllers\SiteContentAdminController;
 use FastWebsite\Controllers\SiteContentPublicController;
 use FastWebsite\Controllers\AssetAdminController;
 use FastWebsite\Controllers\DocumentPublicController;
+use FastWebsite\Controllers\UserAdminController;
 use FastWebsite\Controllers\HomeController;
 use FastWebsite\Controllers\HomepageAdminController;
 use FastWebsite\Controllers\SiteSettingsAdminController;
@@ -56,6 +59,7 @@ use FastWebsite\Repositories\EngagementRepository;
 use FastWebsite\Repositories\SiteContentRepository;
 use FastWebsite\Repositories\AssetRepository;
 use FastWebsite\Repositories\HomepageRepository;
+use FastWebsite\Repositories\PasswordResetRepository;
 use FastWebsite\Repositories\SiteSettingsRepository;
 use FastWebsite\Repositories\UserRepository;
 use FastWebsite\Services\AdminNavigation;
@@ -67,8 +71,11 @@ use FastWebsite\Services\ContentWorkflowService;
 use FastWebsite\Services\DepartmentScopeService;
 use FastWebsite\Services\DepartmentService;
 use FastWebsite\Services\LoginThrottle;
+use FastWebsite\Services\Mailer;
 use FastWebsite\Services\MediaUploadService;
+use FastWebsite\Services\PasswordResetService;
 use FastWebsite\Services\StaffService;
+use FastWebsite\Services\UserService;
 use FastWebsite\Services\ProgrammeService;
 use FastWebsite\Services\CurriculumService;
 use FastWebsite\Services\ResearchService;
@@ -83,6 +90,7 @@ use FastWebsite\Services\DocumentUploadService;
 use FastWebsite\Validation\DepartmentValidator;
 use FastWebsite\Validation\PasswordPolicy;
 use FastWebsite\Validation\StaffValidator;
+use FastWebsite\Validation\UserValidator;
 use FastWebsite\Validation\ProgrammeValidator;
 use FastWebsite\Validation\CurriculumValidator;
 use FastWebsite\Validation\ResearchUnitValidator;
@@ -112,9 +120,50 @@ $view = new View((string) $appConfiguration['views_path']);
 $router = new Router();
 $database = new Database($databaseConfiguration);
 $siteSettingsRepository = new SiteSettingsRepository($database);
+$navAvailabilityConnection = $database->connection();
+$navAvailabilityCount = static function (string $sql) use ($navAvailabilityConnection): bool {
+    return (int) $navAvailabilityConnection->query($sql)->fetchColumn() > 0;
+};
 $view->share([
     'siteContent' => $siteSettingsRepository->publicMap(),
     'siteNavigation' => $siteSettingsRepository->navigation(),
+    // Hides nav links to listing pages that have no published content yet,
+    // so visitors never land on an empty "will appear here" page from the
+    // main navigation. Each flips to true automatically once real content
+    // is published - no template change needed when that happens.
+    'navAvailability' => [
+        'research_units' => $navAvailabilityCount(
+            "SELECT 1 FROM research_units WHERE status = 'published' LIMIT 1"
+        ),
+        'projects' => $navAvailabilityCount(
+            "SELECT 1 FROM projects WHERE publication_status = 'published' LIMIT 1"
+        ),
+        'publications' => $navAvailabilityCount(
+            "SELECT 1 FROM publications WHERE status = 'published' LIMIT 1"
+        ),
+        'innovations' => $navAvailabilityCount(
+            "SELECT 1 FROM innovations WHERE status = 'published' LIMIT 1"
+        ),
+        'facilities' => $navAvailabilityCount(
+            "SELECT 1 FROM facilities WHERE status = 'active' LIMIT 1"
+        ),
+        'engagement' => $navAvailabilityCount(
+            "SELECT 1 FROM partners WHERE status = 'published' LIMIT 1"
+        ) || $navAvailabilityCount(
+            "SELECT 1 FROM partnerships WHERE status = 'published' LIMIT 1"
+        ) || $navAvailabilityCount(
+            "SELECT 1 FROM impact_stories WHERE status = 'published' LIMIT 1"
+        ),
+        'news' => $navAvailabilityCount(
+            "SELECT 1 FROM news WHERE status = 'published' LIMIT 1"
+        ),
+        'events' => $navAvailabilityCount(
+            "SELECT 1 FROM events WHERE status = 'published' LIMIT 1"
+        ),
+        'documents' => $navAvailabilityCount(
+            "SELECT 1 FROM documents WHERE status = 'published' LIMIT 1"
+        ),
+    ],
 ]);
 $logger = new Logger((string) $appConfiguration['log_path']);
 $exceptions = new ExceptionHandler($view, $logger);
@@ -158,9 +207,36 @@ $dashboard = new DashboardRepository(
     $departmentScope
 );
 $passwordPolicy = new PasswordPolicy();
+$mailConfiguration = $appConfiguration['mail'];
+$mailer = new Mailer(
+    (string) $mailConfiguration['brevo_api_key'],
+    (string) $mailConfiguration['from_address'],
+    (string) $mailConfiguration['from_name'],
+    $logger
+);
+$passwordResetConfiguration = $appConfiguration['password_reset'];
+$passwordResetThrottle = new LoginThrottle(
+    (string) $passwordResetConfiguration['throttle_path'],
+    (int) $passwordResetConfiguration['max_attempts'],
+    (int) $passwordResetConfiguration['window_minutes'] * 60,
+    (int) $passwordResetConfiguration['lock_minutes'] * 60
+);
+$passwordResetRepository = new PasswordResetRepository($database);
+$passwordResetService = new PasswordResetService(
+    $users,
+    $passwordResetRepository,
+    $auth,
+    $audit,
+    $passwordResetThrottle,
+    $mailer,
+    $passwordPolicy,
+    (string) $appConfiguration['url']
+);
+$passwordResetController = new PasswordResetController($view, $passwordResetService, $csrf);
 $authController = new AuthController(
     $view,
     $auth,
+    $authorization,
     $csrf,
     $session,
     $passwordPolicy
@@ -173,6 +249,7 @@ $adminController = new AdminController(
     $dashboard
 );
 $departmentRepository = new DepartmentRepository($database, $departmentScope);
+$researchRepository = new ResearchRepository($database, $departmentScope);
 $mediaRepository = new MediaRepository($database);
 $uploadConfiguration = $appConfiguration['uploads'];
 $mediaUploads = new MediaUploadService(
@@ -206,9 +283,12 @@ $departmentAdminController = new DepartmentAdminController(
     $csrf,
     $session
 );
+$innovationRepository = new InnovationRepository($database, $departmentScope);
 $departmentPublicController = new DepartmentPublicController(
     $view,
-    $departmentRepository
+    $departmentRepository,
+    $researchRepository,
+    $innovationRepository
 );
 $staffRepository = new StaffRepository($database, $departmentScope);
 $staffValidator = new StaffValidator($staffRepository);
@@ -271,7 +351,6 @@ $curriculumAdminController = new CurriculumAdminController(
     $session
 );
 $programmePublicController = new ProgrammePublicController($view, $programmeRepository, $curriculumRepository);
-$researchRepository = new ResearchRepository($database, $departmentScope);
 $researchService = new ResearchService($researchRepository, $authorization, $audit);
 $researchAdminController = new ResearchAdminController(
     $view,
@@ -285,7 +364,7 @@ $researchAdminController = new ResearchAdminController(
     $csrf,
     $session
 );
-$researchPublicController = new ResearchPublicController($view, $researchRepository);
+$researchPublicController = new ResearchPublicController($view, $researchRepository, $innovationRepository, $departmentRepository);
 $projectRepository = new ProjectRepository($database, $departmentScope);
 $researchMetadataRepository = new ResearchMetadataRepository($database, $departmentScope);
 $projectService = new ProjectService($projectRepository, $authorization, $audit);
@@ -304,6 +383,7 @@ $projectAdminController = new ProjectAdminController(
 );
 $projectPublicController = new ProjectPublicController($view, $projectRepository, $researchMetadataRepository);
 $publicationService = new PublicationService($publicationRepository, $authorization, $audit);
+$publicationValidator = new PublicationValidator($publicationRepository);
 $publicationAdminController = new PublicationAdminController(
     $view,
     $auth,
@@ -311,7 +391,21 @@ $publicationAdminController = new PublicationAdminController(
     $adminPageContext,
     $publicationRepository,
     $researchMetadataRepository,
-    new PublicationValidator($publicationRepository),
+    $publicationValidator,
+    $publicationService,
+    $csrf,
+    $session
+);
+$staffSelfServiceController = new StaffSelfServiceController(
+    $view,
+    $auth,
+    $adminPageContext,
+    $staffRepository,
+    $staffValidator,
+    $staffService,
+    $mediaUploads,
+    $publicationRepository,
+    $publicationValidator,
     $publicationService,
     $csrf,
     $session
@@ -336,7 +430,6 @@ $researchMetadataAdminController = new ResearchMetadataAdminController(
     $csrf,
     $session
 );
-$innovationRepository = new InnovationRepository($database, $departmentScope);
 $innovationService = new InnovationService($innovationRepository, $authorization, $audit);
 $innovationAdminController = new InnovationAdminController(
     $view,
@@ -350,7 +443,7 @@ $innovationAdminController = new InnovationAdminController(
     $csrf,
     $session
 );
-$innovationPublicController = new InnovationPublicController($view, $innovationRepository);
+$innovationPublicController = new InnovationPublicController($view, $innovationRepository, $departmentRepository);
 $engagementRepository = new EngagementRepository($database, $departmentScope);
 $engagementService = new EngagementService($engagementRepository, $authorization, $audit);
 $engagementAdminController = new EngagementAdminController(
@@ -391,6 +484,26 @@ $assetAdminController = new AssetAdminController(
     $mediaUploads, $documentUploads, $csrf, $session
 );
 $documentPublicController = new DocumentPublicController($view, $assetRepository);
+$userValidator = new UserValidator($users);
+$userService = new UserService(
+    $users,
+    $authorization,
+    $departmentScope,
+    $audit,
+    $passwordResetService
+);
+$userAdminController = new UserAdminController(
+    $view,
+    $auth,
+    $authorization,
+    $departmentScope,
+    $adminPageContext,
+    $users,
+    $userValidator,
+    $userService,
+    $csrf,
+    $session
+);
 $requireAuth = new RequireAuth($auth);
 $requirePasswordChange = new RequirePasswordChange($auth);
 $requirePermission = new RequirePermission($auth, $authorization, $view);
@@ -402,10 +515,12 @@ $registerRoutes(
     $view,
     $database,
     $authController,
+    $passwordResetController,
     $adminController,
     $departmentAdminController,
     $departmentPublicController,
     $staffAdminController,
+    $staffSelfServiceController,
     $staffPublicController,
     $programmeAdminController,
     $programmePublicController,
@@ -425,6 +540,7 @@ $registerRoutes(
     $siteContentPublicController,
     $assetAdminController,
     $documentPublicController,
+    $userAdminController,
     $homepageAdminController,
     $siteSettingsAdminController,
     $homeController,

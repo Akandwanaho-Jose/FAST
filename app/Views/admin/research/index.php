@@ -1,5 +1,19 @@
-<?php declare(strict_types=1); use FastWebsite\Core\View; ?>
+<?php declare(strict_types=1); use FastWebsite\Core\View;
+$queryForPage = static function (int $page) use ($search, $statusFilter): string {
+    return http_build_query(array_filter(
+        ['q' => $search, 'status' => $statusFilter, 'page' => $page],
+        static fn (mixed $value): bool => $value !== ''
+    ));
+};
+?>
 <section class="admin-page-heading"><div><p class="eyebrow">Phase 7</p><h1>Research units</h1><p>Manage research centres, laboratories, groups, people, images, and publication.</p></div><div class="heading-actions"><a class="button button-secondary" href="<?=View::escape($baseUrl)?>admin/research/projects">Projects</a><a class="button button-secondary" href="<?=View::escape($baseUrl)?>admin/research/publications">Publications</a><a class="button button-secondary" href="<?=View::escape($baseUrl)?>admin/research/metadata">Themes &amp; partners</a><?php if($canCreate):?><a class="button button-primary" href="<?=View::escape($baseUrl)?>admin/research/create">Create research unit</a><?php endif;?></div></section>
 <?php if(is_string($success)&&$success!==''):?><div class="success-alert" role="status"><?=View::escape($success)?></div><?php endif;?>
 <form class="filter-bar" method="get" action="<?=View::escape($baseUrl)?>admin/research"><div><label for="research-search">Search research</label><input id="research-search" name="q" type="search" value="<?=View::escape($search)?>" placeholder="Name, acronym, or focus"></div><div><label for="research-status">Status</label><select id="research-status" name="status"><option value="">All statuses</option><?php foreach($statuses as$status):?><option value="<?=View::escape($status)?>"<?=$statusFilter===$status?' selected':''?>><?=View::escape(ucfirst(str_replace('_',' ',$status)))?></option><?php endforeach;?></select></div><button class="button button-primary" type="submit">Apply filters</button></form>
 <section class="admin-panel"><div class="panel-heading"><h2><?=number_format($result['total'])?> research unit<?=$result['total']===1?'':'s'?></h2></div><?php if($result['items']===[]):?><div class="admin-empty">No research units match the current filters.</div><?php else:?><div class="table-scroll"><table class="admin-table"><thead><tr><th>Research unit</th><th>Type</th><th>Department</th><th>Status</th><th></th></tr></thead><tbody><?php foreach($result['items']as$unit):?><tr><th><?=View::escape($unit['name'])?><small><?=View::escape($unit['acronym']??'No acronym')?></small></th><td><?=View::escape($unit['type_name'])?></td><td><?=View::escape($unit['department_name']??'Faculty-wide')?></td><td><span class="status-badge status-<?=View::escape($unit['status'])?>"><?=View::escape(ucfirst(str_replace('_',' ',$unit['status'])))?></span></td><td><a class="button button-secondary button-compact" href="<?=View::escape($baseUrl)?>admin/research/<?=(int)$unit['id']?>">Open</a></td></tr><?php endforeach;?></tbody></table></div><?php endif;?></section>
+<?php if ($result['pages'] > 1): ?>
+    <nav class="pagination" aria-label="Research unit pages">
+        <?php for ($page = 1; $page <= $result['pages']; $page++): ?>
+            <a href="<?= View::escape($baseUrl . 'admin/research?' . $queryForPage($page)) ?>" <?= $page === $result['page'] ? 'aria-current="page"' : '' ?>><?= $page ?></a>
+        <?php endfor; ?>
+    </nav>
+<?php endif; ?>

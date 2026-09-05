@@ -49,7 +49,9 @@ $contentSections = array_values(array_filter(
     $sections,
     static fn (array $section): bool => $section['section_type'] !== 'gallery'
 ));
+$aboutDefaultHeroPath = View::setting($siteContent ?? [], 'about.default_hero_image', 'assets/images/fast-building.png');
 $pageHeroImage = $mediaUrl($item['hero_path'] ?? null)
+    ?? $mediaUrl($aboutDefaultHeroPath)
     ?? $baseUrl . 'assets/images/fast-building.png';
 
 $deanName = '';
@@ -196,26 +198,29 @@ if ($dean !== null) {
         </div></section>
     <?php endforeach; ?>
 <?php else: ?>
-    <header class="about-masthead<?= $slug === 'history-of-the-faculty' ? ' about-history-masthead' : '' ?>">
+    <header class="about-masthead">
         <div class="shell about-masthead-grid">
             <div class="about-masthead-copy" data-about-reveal>
                 <p class="eyebrow">About FAST</p>
                 <h1><?= View::escape($item['title']) ?></h1>
                 <?php if ($item['meta_description']): ?><p class="lead"><?= View::escape($item['meta_description']) ?></p><?php endif; ?>
             </div>
-            <?php if ($slug === 'history-of-the-faculty' && $gallerySections !== []): ?>
-                <div class="about-history-gallery about-history-gallery-<?= min(4, count($gallerySections)) ?>" data-about-reveal>
-                    <?php foreach (array_slice($gallerySections, 0, 4) as $index => $section): ?>
-                        <figure><img src="<?= View::escape($mediaUrl($section['media_path'])) ?>" alt="<?= View::escape($section['media_alt_text'] ?? '') ?>" <?= $index > 0 ? 'loading="lazy"' : '' ?>></figure>
-                    <?php endforeach; ?>
-                </div>
-            <?php else: ?>
-                <figure class="about-masthead-image">
-                    <img src="<?= View::escape($pageHeroImage) ?>" alt="<?= View::escape($item['hero_alt_text'] ?? '') ?>">
-                </figure>
-            <?php endif; ?>
+            <figure class="about-masthead-image">
+                <img src="<?= View::escape($pageHeroImage) ?>" alt="<?= View::escape($item['hero_alt_text'] ?? 'The FAST building at MUST') ?>">
+            </figure>
         </div>
     </header>
+
+    <?php if ($slug === 'history-of-the-faculty' && $gallerySections !== []): ?>
+        <section class="section about-history-gallery-section"><div class="shell">
+            <p class="eyebrow">In pictures</p>
+            <div class="about-history-gallery about-history-gallery-<?= min(4, count($gallerySections)) ?>" data-about-reveal>
+                <?php foreach (array_slice($gallerySections, 0, 4) as $index => $section): ?>
+                    <figure><img src="<?= View::escape($mediaUrl($section['media_path'])) ?>" alt="<?= View::escape($section['media_alt_text'] ?? '') ?>" <?= $index > 0 ? 'loading="lazy"' : '' ?>></figure>
+                <?php endforeach; ?>
+            </div>
+        </div></section>
+    <?php endif; ?>
 
     <nav class="about-page-navigation" aria-label="About FAST pages"><div class="shell">
         <?php foreach ($aboutPages as $aboutSlug => $label): ?>
@@ -280,9 +285,32 @@ if ($dean !== null) {
                 <article class="about-editorial-card" data-about-reveal><p class="eyebrow">Content in progress</p><h2><?= View::escape($item['title']) ?></h2><p>This faculty page is being prepared.</p></article>
             <?php else: ?>
                 <?php foreach ($contentSections as $index => $section): ?>
-                    <?php $sectionImage = $mediaUrl($section['media_path'] ?? null); ?>
-                    <article class="about-editorial-card section-type-<?= View::escape($section['section_type']) ?><?= $sectionImage !== null ? ' has-image' : '' ?>" data-about-reveal style="--about-delay: <?= min(4, $index) * 100 ?>ms">
-                        <?php if ($sectionImage !== null): ?><img src="<?= View::escape($sectionImage) ?>" alt="<?= View::escape($section['media_alt_text'] ?? '') ?>" loading="lazy"><?php endif; ?>
+                    <?php
+                    // Each section can carry a couple of "additional photos"
+                    // (set in the page builder next to its main Image field) that
+                    // stack beside it here, so the photo column can grow to match
+                    // a long paragraph instead of one image floating in leftover
+                    // white space - see SiteContentRepository::sections().
+                    $sectionImage = $mediaUrl($section['media_path'] ?? null);
+                    $photos = [];
+                    if ($sectionImage !== null) {
+                        $photos[] = ['url' => $sectionImage, 'alt' => (string) ($section['media_alt_text'] ?? '')];
+                        foreach ($section['extra_photos'] ?? [] as $extraPhoto) {
+                            $extraUrl = $mediaUrl($extraPhoto['media_path'] ?? null);
+                            if ($extraUrl !== null) {
+                                $photos[] = ['url' => $extraUrl, 'alt' => (string) ($extraPhoto['media_alt_text'] ?? '')];
+                            }
+                        }
+                    }
+                    ?>
+                    <article class="about-editorial-card section-type-<?= View::escape($section['section_type']) ?><?= $photos !== [] ? ' has-image' : '' ?><?= count($photos) > 1 ? ' has-photo-stack' : '' ?>" data-about-reveal style="--about-delay: <?= min(4, $index) * 100 ?>ms">
+                        <?php if ($photos !== []): ?>
+                            <div class="about-editorial-photos">
+                                <?php foreach ($photos as $photo): ?>
+                                    <figure><img src="<?= View::escape($photo['url']) ?>" alt="<?= View::escape($photo['alt']) ?>" loading="lazy"></figure>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
                         <div>
                             <?php if ($section['subheading']): ?><p class="eyebrow"><?= View::escape($section['subheading']) ?></p><?php endif; ?>
                             <?php if ($section['heading']): ?><h2><?= View::escape($section['heading']) ?></h2><?php endif; ?>

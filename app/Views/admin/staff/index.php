@@ -3,6 +3,13 @@
 declare(strict_types=1);
 
 use FastWebsite\Core\View;
+
+$queryForPage = static function (int $page) use ($search, $statusFilter): string {
+    return http_build_query(array_filter(
+        ['q' => $search, 'status' => $statusFilter, 'page' => $page],
+        static fn (mixed $value): bool => $value !== ''
+    ));
+};
 ?>
 <section class="admin-page-heading">
     <div>
@@ -56,3 +63,10 @@ use FastWebsite\Core\View;
         </div>
     <?php endif; ?>
 </section>
+<?php if ($result['pages'] > 1): ?>
+    <nav class="pagination" aria-label="Staff pages">
+        <?php for ($page = 1; $page <= $result['pages']; $page++): ?>
+            <a href="<?= View::escape($baseUrl . 'admin/staff?' . $queryForPage($page)) ?>" <?= $page === $result['page'] ? 'aria-current="page"' : '' ?>><?= $page ?></a>
+        <?php endfor; ?>
+    </nav>
+<?php endif; ?>

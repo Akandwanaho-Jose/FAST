@@ -22,8 +22,8 @@ $roleNames = array_map(
     <link rel="icon" type="image/webp" href="<?= View::escape($urlBase) ?>assets/images/must-logo.webp?v=20260806-01">
     <link rel="apple-touch-icon" href="<?= View::escape($urlBase) ?>assets/images/must-logo.webp?v=20260806-01">
     <link rel="stylesheet" href="<?= View::escape($urlBase) ?>assets/css/app.css">
-    <link rel="stylesheet" href="<?= View::escape($urlBase) ?>assets/css/admin.css?v=20260806-02">
-    <script defer src="<?= View::escape($urlBase) ?>assets/js/admin-editor.js?v=20260806-02"></script>
+    <link rel="stylesheet" href="<?= View::escape($urlBase) ?>assets/css/admin.css?v=20260904-01">
+    <script defer src="<?= View::escape($urlBase) ?>assets/js/admin-editor.js?v=20260904-03"></script>
 </head>
 <body class="admin-body">
     <a class="skip-link" href="#admin-main">Skip to main content</a>

@@ -184,6 +184,54 @@ final class StaffService
         });
     }
 
+    /**
+     * Staff self-service: lets a staff member update their own profile
+     * regardless of its current status (draft or published), without the
+     * elevated staff.edit/publish permissions updatePublished() requires.
+     * Ownership (does this staff row belong to the calling user) must be
+     * verified by the caller before this is invoked - this method trusts
+     * $id once called. Only touches the fields present in $data (a partial
+     * update, per StaffRepository::update()) and never department/position
+     * assignment, so self-service can never grant itself those.
+     *
+     * @param array<string,mixed> $data
+     * @param array<string,mixed> $relations
+     */
+    public function updateOwnProfile(
+        int $id,
+        array $data,
+        int $userId,
+        string $note,
+        string $ip,
+        string $agent,
+        array $relations = []
+    ): void {
+        $this->transaction(function () use ($id, $data, $userId, $note, $ip, $agent, $relations): void {
+            $previous = $this->staff->findForUpdate($id);
+            if ($previous === null) {
+                throw new HttpException(404, 'Staff profile not found.');
+            }
+            $this->staff->update($id, $data);
+            $this->staff->replaceProfileRelations($id, $relations);
+            $this->staff->recordRevision(
+                $id,
+                $previous,
+                [...$data, 'relations' => $relations],
+                $userId,
+                $note !== '' ? $note : 'Profile updated by staff member'
+            );
+            $this->audit->record(
+                $userId,
+                'staff.self_updated',
+                'staff',
+                $id,
+                $ip,
+                $agent,
+                ['status' => $previous['status']]
+            );
+        });
+    }
+
     /** @param array<string,mixed> $data @param array<string,mixed> $assignment */
     public function updateAndPublish(
         int $id,

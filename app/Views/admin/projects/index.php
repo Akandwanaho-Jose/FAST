@@ -1,4 +1,18 @@
-<?php declare(strict_types=1);use FastWebsite\Core\View;?>
+<?php declare(strict_types=1);use FastWebsite\Core\View;
+$queryForPage = static function (int $page) use ($search, $statusFilter, $projectStatusFilter): string {
+    return http_build_query(array_filter(
+        ['q' => $search, 'status' => $statusFilter, 'project_status' => $projectStatusFilter, 'page' => $page],
+        static fn (mixed $value): bool => $value !== ''
+    ));
+};
+?>
 <section class="admin-page-heading"><div><p class="eyebrow">Phase 7 · Projects</p><h1>Research projects</h1><p>Manage project details, teams, images, progress, and publication.</p></div><div class="heading-actions"><a class="button button-secondary" href="<?=View::escape($baseUrl)?>admin/research/metadata">Themes &amp; partners</a><?php if($canCreate):?><a class="button button-primary" href="<?=View::escape($baseUrl)?>admin/research/projects/create">Create project</a><?php endif;?></div></section><?php if(is_string($success)&&$success!==''):?><div class="success-alert"><?=View::escape($success)?></div><?php endif;?>
 <form class="filter-bar" method="get" action="<?=View::escape($baseUrl)?>admin/research/projects"><div><label for="project-search">Search projects</label><input id="project-search" name="q" type="search" value="<?=View::escape($search)?>" placeholder="Title or summary"></div><div><label for="project-state">Project status</label><select id="project-state" name="project_status"><option value="">All project statuses</option><?php foreach($projectStatuses as$status):?><option value="<?=$status?>"<?=$projectStatusFilter===$status?' selected':''?>><?=ucfirst($status)?></option><?php endforeach;?></select></div><div><label for="publication-status">Publication</label><select id="publication-status" name="status"><option value="">All publication statuses</option><?php foreach($statuses as$status):?><option value="<?=$status?>"<?=$statusFilter===$status?' selected':''?>><?=ucfirst(str_replace('_',' ',$status))?></option><?php endforeach;?></select></div><button class="button button-primary" type="submit">Apply filters</button></form>
 <section class="admin-panel"><div class="panel-heading"><h2><?=number_format($result['total'])?> project<?=$result['total']===1?'':'s'?></h2></div><?php if($result['items']===[]):?><div class="admin-empty">No projects match the current filters.</div><?php else:?><div class="table-scroll"><table class="admin-table"><thead><tr><th>Project</th><th>Department</th><th>Progress</th><th>Publication</th><th></th></tr></thead><tbody><?php foreach($result['items']as$p):?><tr><th><?=View::escape($p['title'])?><small><?=View::escape($p['short_title']??'')?></small></th><td><?=View::escape($p['department_name']??'Not assigned')?></td><td><?=View::escape(ucfirst($p['project_status']))?></td><td><span class="status-badge status-<?=View::escape($p['publication_status'])?>"><?=View::escape(ucfirst(str_replace('_',' ',$p['publication_status'])))?></span></td><td><a class="button button-secondary button-compact" href="<?=View::escape($baseUrl)?>admin/research/projects/<?=(int)$p['id']?>">Open</a></td></tr><?php endforeach;?></tbody></table></div><?php endif;?></section>
+<?php if ($result['pages'] > 1): ?>
+    <nav class="pagination" aria-label="Project pages">
+        <?php for ($page = 1; $page <= $result['pages']; $page++): ?>
+            <a href="<?= View::escape($baseUrl . 'admin/research/projects?' . $queryForPage($page)) ?>" <?= $page === $result['page'] ? 'aria-current="page"' : '' ?>><?= $page ?></a>
+        <?php endfor; ?>
+    </nav>
+<?php endif; ?>

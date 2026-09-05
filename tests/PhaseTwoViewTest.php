@@ -18,7 +18,7 @@ return static function (): void {
                 'button_url' => null, 'text_alignment' => 'centre', 'overlay_strength' => 40],
         ],
         'counts' => ['programmes' => 5, 'departments' => 5, 'staff' => 46, 'research' => 0],
-        'announcements' => [], 'programmes' => [], 'departments' => [
+        'programmes' => [], 'departments' => [
             ['hero_path' => 'public/assets/images/department-1.jpg'],
             ['hero_path' => 'public/assets/images/department-2.jpg'],
             ['hero_path' => 'public/assets/images/department-3.jpg'],

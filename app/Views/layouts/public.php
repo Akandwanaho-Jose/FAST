@@ -10,7 +10,7 @@ $description = isset($metaDescription)
     : 'Faculty of Applied Sciences and Technology website.';
 $path = isset($currentPath) ? (string) $currentPath : '';
 $urlBase = isset($baseUrl) ? (string) $baseUrl : '/';
-$assetVersion = '20260806-04';
+$assetVersion = '20260904-11';
 $settings = is_array($siteContent ?? null) ? $siteContent : [];
 $navigationData = is_array($siteNavigation ?? null) ? $siteNavigation : [];
 $programmeDepartments = $navigationData['departments'] ?? [];
@@ -58,7 +58,7 @@ $section = match (true) {
     $pathStartsWith('/programmes') => ['Programmes', 'programmes'],
     $pathStartsWith('/documents') => ['Resources', 'documents'],
     $pathStartsWith('/departments') => ['Departments', 'departments'],
-    $pathStartsWith('/research', '/innovations', '/facilities') => ['Research & Innovation', 'research'],
+    $pathStartsWith('/research', '/innovations', '/facilities') => ['Research Labs', 'research'],
     $pathStartsWith('/staff') => ['People', 'staff'],
     $pathStartsWith('/engagement', '/impact') => ['Engagement', 'engagement'],
     $pathStartsWith('/news', '/events') => ['News & Events', 'news'],
@@ -160,22 +160,23 @@ $isSectionLanding = $section !== null && match ($sectionPath) {
                     </div>
                 </details>
 
+                <?php if ($navAvailability['research_units'] ?? true): ?>
                 <details class="nav-group"<?= $sectionPath === 'research' ? ' data-current="true"' : '' ?>>
-                    <summary><?= View::escape(View::setting($settings, 'navigation.research', 'Research & Innovation')) ?></summary>
+                    <summary>Research Labs</summary>
                     <div class="nav-submenu nav-submenu-wide">
-                        <a <?= $path === '/research' ? 'aria-current="page"' : '' ?> href="<?= View::escape($urlBase) ?>research">Research units</a>
-                        <a <?= $pathStartsWith('/research/projects') ? 'aria-current="page"' : '' ?> href="<?= View::escape($urlBase) ?>research/projects">Projects</a>
-                        <a <?= $pathStartsWith('/research/publications') ? 'aria-current="page"' : '' ?> href="<?= View::escape($urlBase) ?>research/publications">Publications</a>
-                        <a <?= $pathStartsWith('/innovations') ? 'aria-current="page"' : '' ?> href="<?= View::escape($urlBase) ?>innovations">Innovations</a>
-                        <a <?= $pathStartsWith('/facilities') ? 'aria-current="page"' : '' ?> href="<?= View::escape($urlBase) ?>facilities">Facilities &amp; equipment</a>
+                        <a <?= $path === '/research' ? 'aria-current="page"' : '' ?> href="<?= View::escape($urlBase) ?>research">All labs</a>
+                        <?php foreach ($programmeDepartments as $department): ?>
+                            <a href="<?= View::escape($urlBase) ?>research?department=<?= View::escape($department['slug']) ?>"><?= View::escape($department['name']) ?></a>
+                        <?php endforeach; ?>
                     </div>
                 </details>
+                <?php endif; ?>
 
                 <a class="nav-link" <?= $pathStartsWith('/staff') ? 'aria-current="page"' : '' ?> href="<?= View::escape($urlBase) ?>staff"><?= View::escape(View::setting($settings, 'navigation.staff', 'Our Staff')) ?></a>
                 <details class="nav-group"<?= $pathStartsWith('/engagement', '/impact', '/industrial-training', '/community-outreach', '/partnerships', '/engineering-education') ? ' data-current="true"' : '' ?>>
                     <summary><?= View::escape(View::setting($settings, 'navigation.partnerships', 'Partnerships')) ?></summary>
                     <div class="nav-submenu nav-submenu-wide">
-                        <a href="<?= View::escape($urlBase) ?>engagement">Partnerships and impact</a>
+                        <?php if ($navAvailability['engagement'] ?? true): ?><a href="<?= View::escape($urlBase) ?>engagement">Partnerships and impact</a><?php endif; ?>
                         <a href="<?= View::escape($urlBase) ?>industrial-training">Industrial training</a>
                         <a href="<?= View::escape($urlBase) ?>community-outreach">Community outreach</a>
                         <a href="<?= View::escape($urlBase) ?>partnerships">Our partnerships</a>
@@ -194,18 +195,14 @@ $isSectionLanding = $section !== null && match ($sectionPath) {
                     </div>
                 </details>
 
-                <details class="nav-group"<?= $sectionPath === 'news' ? ' data-current="true"' : '' ?>>
-                    <summary><?= View::escape(View::setting($settings, 'navigation.news_events', 'News & Events')) ?></summary>
-                    <div class="nav-submenu nav-submenu-end">
-                        <a <?= $pathStartsWith('/news') ? 'aria-current="page"' : '' ?> href="<?= View::escape($urlBase) ?>news">News</a>
-                        <a <?= $pathStartsWith('/events') ? 'aria-current="page"' : '' ?> href="<?= View::escape($urlBase) ?>events">Events</a>
-                    </div>
-                </details>
+                <?php if ($navAvailability['news'] ?? true): ?>
+                <a class="nav-link" <?= $pathStartsWith('/news') ? 'aria-current="page"' : '' ?> href="<?= View::escape($urlBase) ?>news"><?= View::escape(View::setting($settings, 'navigation.news', 'News')) ?></a>
+                <?php endif; ?>
 
                 <details class="nav-group"<?= $pathStartsWith('/documents') ? ' data-current="true"' : '' ?>>
                     <summary><?= View::escape(View::setting($settings, 'navigation.resources', 'Resources')) ?></summary>
                     <div class="nav-submenu nav-submenu-end">
-                        <a <?= $pathStartsWith('/documents') ? 'aria-current="page"' : '' ?> href="<?= View::escape($urlBase) ?>documents">Academic documents</a>
+                        <?php if ($navAvailability['documents'] ?? true): ?><a <?= $pathStartsWith('/documents') ? 'aria-current="page"' : '' ?> href="<?= View::escape($urlBase) ?>documents">Academic documents</a><?php endif; ?>
                         <a href="<?= View::escape($libraryUrl) ?>"><?= View::escape(View::setting($settings, 'navigation.library', 'MUST Library')) ?></a>
                         <a href="<?= View::escape($elearningUrl) ?>"><?= View::escape(View::setting($settings, 'navigation.elearning', 'eLearning')) ?></a>
                     </div>
@@ -250,25 +247,22 @@ $isSectionLanding = $section !== null && match ($sectionPath) {
                     <a href="<?= View::escape($urlBase) ?>departments">Departments</a>
                     <a href="<?= View::escape($urlBase) ?>staff">People</a>
                 </div>
+                <?php if ($navAvailability['research_units'] ?? true): ?>
                 <div>
                     <h2><?= View::escape(View::setting($settings, 'navigation.footer_research', 'Research')) ?></h2>
-                    <a href="<?= View::escape($urlBase) ?>research">Research units</a>
-                    <a href="<?= View::escape($urlBase) ?>research/projects">Projects</a>
-                    <a href="<?= View::escape($urlBase) ?>research/publications">Publications</a>
+                    <a href="<?= View::escape($urlBase) ?>research">Research Labs</a>
                 </div>
+                <?php endif; ?>
                 <div>
                     <h2><?= View::escape(View::setting($settings, 'navigation.footer_connect', 'Connect')) ?></h2>
-                    <a href="<?= View::escape($urlBase) ?>engagement">Engagement</a>
+                    <?php if ($navAvailability['engagement'] ?? true): ?><a href="<?= View::escape($urlBase) ?>engagement">Engagement</a><?php endif; ?>
                     <a href="<?= View::escape($urlBase) ?>student-life">Student life</a>
                     <a href="<?= View::escape($urlBase) ?>student-mentorship-programme">Mentorship</a>
-                    <a href="<?= View::escape($urlBase) ?>news">News</a>
-                    <a href="<?= View::escape($urlBase) ?>events">Events</a>
+                    <?php if ($navAvailability['news'] ?? true): ?><a href="<?= View::escape($urlBase) ?>news">News</a><?php endif; ?>
                 </div>
                 <div>
                     <h2><?= View::escape(View::setting($settings, 'navigation.footer_resources', 'Resources')) ?></h2>
-                    <a href="<?= View::escape($urlBase) ?>facilities">Facilities</a>
-                    <a href="<?= View::escape($urlBase) ?>documents">Documents</a>
-                    <a href="<?= View::escape($urlBase) ?>login">Website administration</a>
+                    <?php if ($navAvailability['documents'] ?? true): ?><a href="<?= View::escape($urlBase) ?>documents">Documents</a><?php endif; ?>
                 </div>
             </nav>
         </div>

@@ -69,7 +69,7 @@ $linkTypes = [
     <section class="form-section">
         <div class="form-section-heading"><h2>Profile photograph</h2><p>Reuse an existing image or securely upload a new one.</p></div>
         <div class="form-grid">
-            <div class="form-field span-2"><label for="profile_media_id">Existing image</label><select id="profile_media_id" name="profile_media_id"><option value="">No image</option><?php foreach ($images as $image): ?><option value="<?= (int) $image['id'] ?>" <?= $value('profile_media_id') === (string) $image['id'] ? 'selected' : '' ?>><?= View::escape($image['original_name']) ?></option><?php endforeach; ?></select></div>
+            <div class="form-field span-2"><label for="profile_media_id">Existing image</label><select id="profile_media_id" name="profile_media_id" data-media-upload="<?= View::escape($baseUrl) ?>admin/media"><option value="">No image</option><?php foreach ($images as $image): ?><option value="<?= (int) $image['id'] ?>" <?= $value('profile_media_id') === (string) $image['id'] ? 'selected' : '' ?>><?= View::escape($image['original_name']) ?></option><?php endforeach; ?></select></div>
             <div class="form-field span-2 upload-field"><label for="profile_image">Upload profile image</label><input id="profile_image" name="profile_image" type="file" accept="image/jpeg,image/png,image/webp,image/gif"><p class="field-guidance">JPEG, PNG, WebP, or GIF; maximum 20 MB.</p></div>
             <div class="form-field span-2"><label for="profile_alt_text">Image description</label><input id="profile_alt_text" name="profile_alt_text" maxlength="255" value="<?= View::escape($value('profile_alt_text')) ?>"><p class="field-guidance">Required for a new upload.</p></div>
         </div>

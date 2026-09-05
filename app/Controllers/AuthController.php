@@ -9,6 +9,7 @@ use FastWebsite\Core\Csrf;
 use FastWebsite\Core\Request;
 use FastWebsite\Core\Response;
 use FastWebsite\Core\Session;
+use FastWebsite\Services\AuthorizationService;
 use FastWebsite\Services\AuthService;
 use FastWebsite\Validation\PasswordPolicy;
 
@@ -17,6 +18,7 @@ final class AuthController extends Controller
     public function __construct(
         \FastWebsite\Core\View $view,
         private readonly AuthService $auth,
+        private readonly AuthorizationService $authorization,
         private readonly Csrf $csrf,
         private readonly Session $session,
         private readonly PasswordPolicy $passwordPolicy
@@ -33,11 +35,21 @@ final class AuthController extends Controller
                 $request->baseUrl()
                 . ((int) $user['must_change_password'] === 1
                     ? 'password/change'
-                    : 'admin')
+                    : $this->destination((int) $user['id']))
             );
         }
 
         return $this->renderLogin($request);
+    }
+
+    /**
+     * A logged-in user with no RBAC permissions at all is a staff
+     * self-service account, not an admin - send them to their own profile
+     * instead of the (permission-gated, otherwise empty for them) admin area.
+     */
+    private function destination(int $userId): string
+    {
+        return $this->authorization->permissions($userId) === [] ? 'my-profile' : 'admin';
     }
 
     public function login(Request $request): Response
@@ -82,7 +94,7 @@ final class AuthController extends Controller
             $request->baseUrl()
             . ((int) $result->user['must_change_password'] === 1
                 ? 'password/change'
-                : 'admin')
+                : $this->destination((int) $result->user['id']))
         );
     }
 
@@ -146,7 +158,9 @@ final class AuthController extends Controller
             'Your password has been changed securely.'
         );
 
-        return Response::redirect($request->baseUrl() . 'admin');
+        return Response::redirect(
+            $request->baseUrl() . $this->destination((int) $user['id'])
+        );
     }
 
     public function logout(Request $request): Response

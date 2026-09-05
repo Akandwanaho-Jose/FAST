@@ -61,6 +61,21 @@ final class InnovationRepository
         return $this->connection()->query($sql)->fetchAll();
     }
 
+    /** @return list<array<string,mixed>> */
+    public function publishedByDepartment(int $departmentId): array
+    {
+        $statement = $this->connection()->prepare(
+            'SELECT i.*,m.file_path AS hero_path,m.alt_text AS hero_alt_text
+             FROM innovations i
+             LEFT JOIN media m ON m.id=i.hero_media_id AND m.status="active" AND m.deleted_at IS NULL
+             WHERE i.lead_department_id=:department_id AND i.status="published"
+               AND i.published_at IS NOT NULL AND i.published_at<=NOW()
+             ORDER BY i.name'
+        );
+        $statement->execute(['department_id' => $departmentId]);
+        return $statement->fetchAll();
+    }
+
     /** @return array<string,mixed>|null */
     public function findInnovation(int $id, int $userId): ?array
     {
@@ -94,6 +109,30 @@ final class InnovationRepository
     {
         $where=$userId===null?'1=1':$this->unitScope($userId,'ru');if($publicOnly)$where.=' AND f.status="active" AND ru.status="published" AND ru.published_at IS NOT NULL AND ru.published_at<=NOW()';
         return$this->connection()->query('SELECT f.*,ru.name AS research_unit_name,ru.slug AS research_unit_slug,d.name AS department_name,l.campus,l.building,l.floor,l.room FROM facilities f INNER JOIN research_units ru ON ru.id=f.research_unit_id AND ru.deleted_at IS NULL LEFT JOIN departments d ON d.id=ru.department_id LEFT JOIN locations l ON l.id=f.location_id WHERE '.$where.' ORDER BY ru.name,f.name')->fetchAll();
+    }
+
+    /** @return list<array<string,mixed>> */
+    public function facilitiesByUnit(int $unitId): array
+    {
+        $statement = $this->connection()->prepare(
+            'SELECT f.*,l.campus,l.building,l.floor,l.room
+             FROM facilities f LEFT JOIN locations l ON l.id=f.location_id
+             WHERE f.research_unit_id=:unit_id AND f.status="active" ORDER BY f.name'
+        );
+        $statement->execute(['unit_id' => $unitId]);
+        return $statement->fetchAll();
+    }
+
+    /** @return list<array<string,mixed>> */
+    public function equipmentByUnit(int $unitId): array
+    {
+        $statement = $this->connection()->prepare(
+            'SELECT e.*,f.name AS facility_name
+             FROM equipment e LEFT JOIN facilities f ON f.id=e.facility_id
+             WHERE e.research_unit_id=:unit_id AND e.status="active" ORDER BY e.name'
+        );
+        $statement->execute(['unit_id' => $unitId]);
+        return $statement->fetchAll();
     }
 
     /** @return array<string,mixed>|null */

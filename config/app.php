@@ -7,6 +7,10 @@ use FastWebsite\Core\Env;
 return [
     'name' => Env::get('APP_NAME', 'FAST Website'),
     'environment' => Env::get('APP_ENV', 'production'),
+    // Fixed, admin-configured origin used to build absolute links in
+    // outbound email - never derive this from the request's Host header
+    // (see PasswordResetService).
+    'url' => rtrim(Env::get('APP_URL', 'http://localhost/FAST/public'), '/'),
     'debug' => Env::boolean('APP_DEBUG', false),
     'timezone' => 'Africa/Kampala',
     'log_path' => dirname(__DIR__) . '/storage/logs/application.log',
@@ -21,6 +25,17 @@ return [
         'window_minutes' => Env::integer('LOGIN_WINDOW_MINUTES', 15),
         'lock_minutes' => Env::integer('LOGIN_LOCK_MINUTES', 15),
         'throttle_path' => dirname(__DIR__) . '/storage/cache/login',
+    ],
+    'mail' => [
+        'from_address' => Env::get('MAIL_FROM_ADDRESS', ''),
+        'from_name' => Env::get('MAIL_FROM_NAME', 'FAST Website'),
+        'brevo_api_key' => Env::get('BREVO_API_KEY', ''),
+    ],
+    'password_reset' => [
+        'max_attempts' => 3,
+        'window_minutes' => 60,
+        'lock_minutes' => 60,
+        'throttle_path' => dirname(__DIR__) . '/storage/cache/password-reset',
     ],
     'uploads' => [
         'public_path' => dirname(__DIR__) . '/public',

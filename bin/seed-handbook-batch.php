@@ -126,7 +126,7 @@ $staffImages = indexStaffImages(readStaffSeeds(
 foreach ($staffImages as $slug => $imageSeed) {
     $absolutePath = dirname(__DIR__) . '/' . $imageSeed['public_path'];
     if (!is_file($absolutePath)) {
-        $result['errors'][] = 'Extracted staff portrait is missing: ' . $slug;
+        $result['warnings'][] = 'Extracted staff portrait is missing: ' . $slug;
     }
 }
 
@@ -246,6 +246,10 @@ try {
             : null;
         $positionId = $positions[$seed['position_code']] ?? null;
         $imageSeed = $staffImages[$slug] ?? null;
+        if (is_array($imageSeed) && !is_file(dirname(__DIR__) . '/' . $imageSeed['public_path'])) {
+            // Portrait metadata exists but the file has not been supplied yet; treat like no portrait.
+            $imageSeed = null;
+        }
         $seedMediaId = null;
         if (is_array($imageSeed)) {
             if ($apply) {

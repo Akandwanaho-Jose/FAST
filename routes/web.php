@@ -8,10 +8,12 @@ use FastWebsite\Controllers\HomepageAdminController;
 use FastWebsite\Controllers\SiteSettingsAdminController;
 use FastWebsite\Controllers\AdminController;
 use FastWebsite\Controllers\AuthController;
+use FastWebsite\Controllers\PasswordResetController;
 use FastWebsite\Controllers\DepartmentAdminController;
 use FastWebsite\Controllers\DepartmentPublicController;
 use FastWebsite\Controllers\StaffAdminController;
 use FastWebsite\Controllers\StaffPublicController;
+use FastWebsite\Controllers\StaffSelfServiceController;
 use FastWebsite\Controllers\ProgrammeAdminController;
 use FastWebsite\Controllers\ProgrammePublicController;
 use FastWebsite\Controllers\CurriculumAdminController;
@@ -30,6 +32,7 @@ use FastWebsite\Controllers\SiteContentAdminController;
 use FastWebsite\Controllers\SiteContentPublicController;
 use FastWebsite\Controllers\AssetAdminController;
 use FastWebsite\Controllers\DocumentPublicController;
+use FastWebsite\Controllers\UserAdminController;
 use FastWebsite\Core\Database;
 use FastWebsite\Core\Request;
 use FastWebsite\Core\Response;
@@ -45,10 +48,12 @@ return static function (
     View $view,
     Database $database,
     AuthController $authController,
+    PasswordResetController $passwordResetController,
     AdminController $adminController,
     DepartmentAdminController $departmentAdminController,
     DepartmentPublicController $departmentPublicController,
     StaffAdminController $staffAdminController,
+    StaffSelfServiceController $staffSelfServiceController,
     StaffPublicController $staffPublicController,
     ProgrammeAdminController $programmeAdminController,
     ProgrammePublicController $programmePublicController,
@@ -68,6 +73,7 @@ return static function (
     SiteContentPublicController $siteContentPublicController,
     AssetAdminController $assetAdminController,
     DocumentPublicController $documentPublicController,
+    UserAdminController $userAdminController,
     HomepageAdminController $homepageAdminController,
     SiteSettingsAdminController $siteSettingsAdminController,
     HomeController $homeController,
@@ -126,6 +132,10 @@ return static function (
     $router->get('/documents', [$documentPublicController, 'index']);
     $router->get('/login', [$authController, 'loginForm']);
     $router->post('/login', [$authController, 'login']);
+    $router->get('/password/forgot', [$passwordResetController, 'forgotForm']);
+    $router->post('/password/forgot', [$passwordResetController, 'forgotSubmit']);
+    $router->get('/password/reset/{token}', [$passwordResetController, 'resetForm']);
+    $router->post('/password/reset/{token}', [$passwordResetController, 'resetSubmit']);
     $router->get(
         '/password/change',
         static fn (Request $request): Response => $requireAuth->handle(
@@ -140,13 +150,39 @@ return static function (
             [$authController, 'changePassword']
         )
     );
+
+    // Staff self-service: auth-only (ownership-gated inside the controller,
+    // not RBAC), deliberately not wrapped in $protect()/RequirePermission -
+    // this isn't a permission-gated area, see StaffSelfServiceController.
+    $selfServiceProtect = static function (callable $handler) use (
+        $requireAuth,
+        $requirePasswordChange
+    ): callable {
+        return static fn (Request $request): Response => $requireAuth->handle(
+            $request,
+            static fn (Request $request): Response => $requirePasswordChange->handle(
+                $request,
+                $handler
+            )
+        );
+    };
+    $router->get('/my-profile', $selfServiceProtect([$staffSelfServiceController, 'profile']));
+    $router->post('/my-profile', $selfServiceProtect([$staffSelfServiceController, 'updateProfile']));
+    $router->get('/my-publications', $selfServiceProtect([$staffSelfServiceController, 'publications']));
+    $router->get('/my-publications/create', $selfServiceProtect([$staffSelfServiceController, 'createPublicationForm']));
+    $router->post('/my-publications', $selfServiceProtect([$staffSelfServiceController, 'storePublication']));
+    $router->get('/my-publications/{id}/edit', $selfServiceProtect([$staffSelfServiceController, 'editPublicationForm']));
+    $router->post('/my-publications/{id}', $selfServiceProtect([$staffSelfServiceController, 'updatePublication']));
+    $router->post('/my-publications/{id}/authors', $selfServiceProtect([$staffSelfServiceController, 'addAuthor']));
+    $router->post('/my-publications/{id}/authors/{authorId}/remove', $selfServiceProtect([$staffSelfServiceController, 'removeAuthor']));
+
     $router->get(
         '/admin',
         $protect('dashboard.view', [$adminController, 'index'])
     );
 
     foreach ($adminNavigation->definitions() as $module) {
-        if (in_array($module['key'], ['dashboard', 'homepage', 'site-content', 'departments', 'staff', 'programmes', 'research', 'innovations', 'facilities', 'engagement', 'news', 'events', 'pages', 'media', 'documents'], true)) {
+        if (in_array($module['key'], ['dashboard', 'homepage', 'site-content', 'departments', 'staff', 'programmes', 'research', 'innovations', 'facilities', 'engagement', 'news', 'events', 'pages', 'media', 'documents', 'users'], true)) {
             continue;
         }
 
@@ -286,6 +322,10 @@ return static function (
     $router->post('/admin/research/projects/{id}/workflow', $protect('research.view', [$projectAdminController, 'workflow']));
     $router->post('/admin/research/projects/{id}/members', $protect('research.edit', [$projectAdminController, 'addMember']));
     $router->post('/admin/research/projects/{id}/members/{memberId}/remove', $protect('research.edit', [$projectAdminController, 'removeMember']));
+    $router->post('/admin/research/projects/{id}/milestones', $protect('research.edit', [$projectAdminController, 'addMilestone']));
+    $router->get('/admin/research/projects/{id}/milestones/{milestoneId}/edit', $protect('research.edit', [$projectAdminController, 'editMilestone']));
+    $router->post('/admin/research/projects/{id}/milestones/{milestoneId}', $protect('research.edit', [$projectAdminController, 'updateMilestone']));
+    $router->post('/admin/research/projects/{id}/milestones/{milestoneId}/remove', $protect('research.edit', [$projectAdminController, 'removeMilestone']));
     $router->get('/admin/research/publications', $protect('research.view', [$publicationAdminController, 'index']));
     $router->get('/admin/research/publications/create', $protect('research.create', [$publicationAdminController, 'create']));
     $router->post('/admin/research/publications', $protect('research.create', [$publicationAdminController, 'store']));
@@ -346,6 +386,8 @@ return static function (
     $router->get('/admin/news/{id}/edit', $protect('news.edit', [$siteContentAdminController, 'editNews']));
     $router->post('/admin/news/{id}', $protect('news.edit', [$siteContentAdminController, 'updateNews']));
     $router->post('/admin/news/{id}/workflow', $protect('news.view', [$siteContentAdminController, 'newsWorkflow']));
+    $router->post('/admin/news/{id}/gallery', $protect('news.edit', [$siteContentAdminController, 'addNewsGalleryPhoto']));
+    $router->post('/admin/news/{id}/gallery/{mediaId}/remove', $protect('news.edit', [$siteContentAdminController, 'removeNewsGalleryPhoto']));
     $router->get('/admin/events', $protect('events.manage', [$siteContentAdminController, 'events']));
     $router->get('/admin/events/create', $protect('events.manage', [$siteContentAdminController, 'createEvent']));
     $router->post('/admin/events', $protect('events.manage', [$siteContentAdminController, 'storeEvent']));
@@ -355,11 +397,6 @@ return static function (
     $router->get('/admin/pages', $protect('pages.manage', [$siteContentAdminController, 'pages']));
     $router->get('/admin/pages/create', $protect('pages.manage', [$siteContentAdminController, 'createPage']));
     $router->post('/admin/pages', $protect('pages.manage', [$siteContentAdminController, 'storePage']));
-    $router->get('/admin/pages/announcements/create', $protect('pages.manage', [$siteContentAdminController, 'createAnnouncement']));
-    $router->post('/admin/pages/announcements', $protect('pages.manage', [$siteContentAdminController, 'storeAnnouncement']));
-    $router->get('/admin/pages/announcements/{id}/edit', $protect('pages.manage', [$siteContentAdminController, 'editAnnouncement']));
-    $router->post('/admin/pages/announcements/{id}', $protect('pages.manage', [$siteContentAdminController, 'updateAnnouncement']));
-    $router->post('/admin/pages/announcements/{id}/workflow', $protect('pages.manage', [$siteContentAdminController, 'announcementWorkflow']));
     $router->get('/admin/pages/{id}/edit', $protect('pages.manage', [$siteContentAdminController, 'editPage']));
     $router->post('/admin/pages/{id}', $protect('pages.manage', [$siteContentAdminController, 'updatePage']));
     $router->post('/admin/pages/{id}/workflow', $protect('pages.manage', [$siteContentAdminController, 'pageWorkflow']));
@@ -377,6 +414,11 @@ return static function (
     $router->get('/admin/documents/{id}/edit', $protect('documents.manage', [$assetAdminController, 'editDoc']));
     $router->post('/admin/documents/{id}', $protect('documents.manage', [$assetAdminController, 'updateDoc']));
     $router->post('/admin/documents/{id}/workflow', $protect('documents.manage', [$assetAdminController, 'docWorkflow']));
+    $router->get('/admin/users', $protect('users.manage', [$userAdminController, 'index']));
+    $router->get('/admin/users/create', $protect('users.manage', [$userAdminController, 'create']));
+    $router->post('/admin/users', $protect('users.manage', [$userAdminController, 'store']));
+    $router->get('/admin/users/{id}/edit', $protect('users.manage', [$userAdminController, 'edit']));
+    $router->post('/admin/users/{id}', $protect('users.manage', [$userAdminController, 'update']));
     $router->get('/admin/research/{id}', $protect('research.view', [$researchAdminController, 'show']));
     $router->get('/admin/research/{id}/edit', $protect('research.edit', [$researchAdminController, 'edit']));
     $router->post('/admin/research/{id}', $protect('research.edit', [$researchAdminController, 'update']));

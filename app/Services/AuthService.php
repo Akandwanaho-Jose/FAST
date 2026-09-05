@@ -189,6 +189,34 @@ final class AuthService
     }
 
     /**
+     * Sets a new password without requiring the current one - used by the
+     * "forgot password" flow, where a valid single-use emailed token is the
+     * proof of identity instead. Reuses UserRepository::changePassword(),
+     * so this also clears must_change_password, unlocks the account, and
+     * invalidates the remember-me token, exactly like a normal change does.
+     */
+    public function resetPassword(
+        int $userId,
+        string $newPassword,
+        string $ipAddress,
+        string $userAgent
+    ): void {
+        $this->users->changePassword(
+            $userId,
+            password_hash($newPassword, PASSWORD_DEFAULT)
+        );
+        $this->session->regenerate();
+        $this->audit->record(
+            $userId,
+            'auth.password_reset',
+            'user',
+            $userId,
+            $ipAddress,
+            $userAgent
+        );
+    }
+
+    /**
      * @param array<string, mixed> $user
      */
     private function isDatabaseLocked(array $user): bool

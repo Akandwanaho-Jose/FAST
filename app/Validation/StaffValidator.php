@@ -163,10 +163,14 @@ final class StaffValidator
         ];
     }
 
-    /** @param array<string,mixed> $input @param list<string> $errors
+    /**
+     * Pure qualifications/links/expertise validation - no admin-only fields
+     * involved, so this is also reused directly by staff self-service.
+     *
+     * @param array<string,mixed> $input @param list<string> $errors
      * @return array{qualifications:list<array<string,mixed>>,links:list<array<string,mixed>>,expertise_ids:list<int>}
      */
-    private function relations(array $input, array &$errors): array
+    public function relations(array $input, array &$errors): array
     {
         $qualifications = [];
         foreach (is_array($input['qualifications'] ?? null) ? $input['qualifications'] : [] as $row) {

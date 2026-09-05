@@ -30,6 +30,18 @@ final class Response
         return new self('', $status, ['Location' => $location]);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
+    public static function json(array $data, int $status = 200): self
+    {
+        return new self(
+            json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?: '{}',
+            $status,
+            ['Content-Type' => 'application/json; charset=UTF-8']
+        );
+    }
+
     public function withHeader(string $name, string $value): self
     {
         $response = clone $this;

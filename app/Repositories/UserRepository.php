@@ -176,7 +176,180 @@ final class UserRepository
         return $access;
     }
 
-    private function connection(): PDO
+    /**
+     * @return array{items: list<array<string, mixed>>, total: int, pages: int, page: int}
+     */
+    public function paginateAdmin(string $search, string $roleFilter, int $page, int $perPage = 20): array
+    {
+        $conditions = ['u.deleted_at IS NULL'];
+        $parameters = [];
+
+        if ($search !== '') {
+            $conditions[] = '(u.name LIKE :search_name OR u.email LIKE :search_email)';
+            $parameters['search_name'] = '%' . $search . '%';
+            $parameters['search_email'] = '%' . $search . '%';
+        }
+
+        if ($roleFilter !== '') {
+            $conditions[] = 'EXISTS (
+                SELECT 1 FROM user_roles ur2
+                INNER JOIN roles r2 ON r2.id = ur2.role_id
+                WHERE ur2.user_id = u.id AND r2.code = :role_filter
+            )';
+            $parameters['role_filter'] = $roleFilter;
+        }
+
+        $where = implode(' AND ', $conditions);
+        $count = $this->connection()->prepare('SELECT COUNT(*) FROM users u WHERE ' . $where);
+        $count->execute($parameters);
+        $total = (int) $count->fetchColumn();
+        $pages = max(1, (int) ceil($total / $perPage));
+        $page = min(max(1, $page), $pages);
+        $statement = $this->connection()->prepare(
+            'SELECT u.id, u.name, u.email, u.is_active, u.must_change_password, u.last_login_at,
+                    GROUP_CONCAT(DISTINCT r.name ORDER BY r.name SEPARATOR ", ") AS role_names
+             FROM users u
+             LEFT JOIN user_roles ur ON ur.user_id = u.id
+             LEFT JOIN roles r ON r.id = ur.role_id
+             WHERE ' . $where . '
+             GROUP BY u.id
+             ORDER BY u.name
+             LIMIT ' . $perPage . ' OFFSET ' . (($page - 1) * $perPage)
+        );
+        $statement->execute($parameters);
+        $items = $statement->fetchAll();
+
+        return ['items' => is_array($items) ? $items : [], 'total' => $total, 'pages' => $pages, 'page' => $page];
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function findAdminById(int $id): ?array
+    {
+        $statement = $this->connection()->prepare(
+            'SELECT id, name, email, is_active, must_change_password, last_login_at
+             FROM users
+             WHERE id = :id AND deleted_at IS NULL
+             LIMIT 1'
+        );
+        $statement->execute(['id' => $id]);
+        $user = $statement->fetch();
+
+        return is_array($user) ? $user : null;
+    }
+
+    public function emailExistsForAdmin(string $email, ?int $excludeId = null): bool
+    {
+        $sql = 'SELECT COUNT(*) FROM users WHERE email = :email AND deleted_at IS NULL';
+        $parameters = ['email' => strtolower(trim($email))];
+
+        if ($excludeId !== null) {
+            $sql .= ' AND id != :exclude_id';
+            $parameters['exclude_id'] = $excludeId;
+        }
+
+        $statement = $this->connection()->prepare($sql);
+        $statement->execute($parameters);
+
+        return (int) $statement->fetchColumn() > 0;
+    }
+
+    /**
+     * @return list<array{id: int, code: string, name: string}>
+     */
+    public function allRoles(): array
+    {
+        $rows = $this->connection()->query('SELECT id, code, name FROM roles ORDER BY name')->fetchAll();
+
+        return array_map(static fn (array $row): array => [
+            'id' => (int) $row['id'],
+            'code' => (string) $row['code'],
+            'name' => (string) $row['name'],
+        ], is_array($rows) ? $rows : []);
+    }
+
+    /**
+     * @return list<int>
+     */
+    public function roleIdsForUser(int $userId): array
+    {
+        $statement = $this->connection()->prepare('SELECT role_id FROM user_roles WHERE user_id = :user_id');
+        $statement->execute(['user_id' => $userId]);
+
+        return array_map('intval', $statement->fetchAll(PDO::FETCH_COLUMN));
+    }
+
+    public function roleIdByCode(string $code): ?int
+    {
+        $statement = $this->connection()->prepare('SELECT id FROM roles WHERE code = :code LIMIT 1');
+        $statement->execute(['code' => $code]);
+        $id = $statement->fetchColumn();
+
+        return $id === false ? null : (int) $id;
+    }
+
+    public function countUsersWithRole(string $code, ?int $excludeUserId = null): int
+    {
+        $sql = 'SELECT COUNT(DISTINCT ur.user_id)
+                FROM user_roles ur
+                INNER JOIN roles r ON r.id = ur.role_id
+                INNER JOIN users u ON u.id = ur.user_id
+                WHERE r.code = :code AND u.deleted_at IS NULL AND u.is_active = 1';
+        $parameters = ['code' => $code];
+
+        if ($excludeUserId !== null) {
+            $sql .= ' AND ur.user_id != :exclude_id';
+            $parameters['exclude_id'] = $excludeUserId;
+        }
+
+        $statement = $this->connection()->prepare($sql);
+        $statement->execute($parameters);
+
+        return (int) $statement->fetchColumn();
+    }
+
+    public function insertUser(string $name, string $email, string $passwordHash): int
+    {
+        $statement = $this->connection()->prepare(
+            'INSERT INTO users (name, email, password_hash, is_active, must_change_password)
+             VALUES (:name, :email, :password_hash, 1, 1)'
+        );
+        $statement->execute([
+            'name' => $name,
+            'email' => strtolower(trim($email)),
+            'password_hash' => $passwordHash,
+        ]);
+
+        return (int) $this->connection()->lastInsertId();
+    }
+
+    public function updateUser(int $id, string $name, string $email): void
+    {
+        $statement = $this->connection()->prepare(
+            'UPDATE users SET name = :name, email = :email WHERE id = :id AND deleted_at IS NULL'
+        );
+        $statement->execute(['name' => $name, 'email' => strtolower(trim($email)), 'id' => $id]);
+    }
+
+    /**
+     * @param list<int> $roleIds
+     */
+    public function syncRoles(int $userId, array $roleIds, int $assignedBy): void
+    {
+        $delete = $this->connection()->prepare('DELETE FROM user_roles WHERE user_id = :user_id');
+        $delete->execute(['user_id' => $userId]);
+
+        $insert = $this->connection()->prepare(
+            'INSERT INTO user_roles (user_id, role_id, assigned_by) VALUES (:user_id, :role_id, :assigned_by)'
+        );
+
+        foreach (array_unique($roleIds) as $roleId) {
+            $insert->execute(['user_id' => $userId, 'role_id' => $roleId, 'assigned_by' => $assignedBy]);
+        }
+    }
+
+    public function connection(): PDO
     {
         return $this->database->connection();
     }

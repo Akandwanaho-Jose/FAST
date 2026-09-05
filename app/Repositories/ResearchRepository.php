@@ -145,6 +145,73 @@ final class ResearchRepository
         $statement->execute($parameters); return ['items'=>$statement->fetchAll(),'total'=>$total,'page'=>$page,'pages'=>$pages];
     }
 
+    /**
+     * Published research units grouped by their department, in the site's
+     * canonical department order (departments.display_order, then name).
+     * Used for the ungrouped/no-filter view of the public research index.
+     *
+     * @return list<array{department:array<string,mixed>,units:list<array<string,mixed>>}>
+     */
+    public function publishedGroupedByDepartment(): array
+    {
+        $statement = $this->connection()->query(
+            'SELECT ru.id,ru.name,ru.acronym,ru.slug,ru.overview,ru.research_focus,rut.name AS type_name,
+                    d.id AS department_id,d.name AS department_name,d.slug AS department_slug,
+                    d.display_order AS department_display_order,
+                    m.file_path AS hero_path,m.alt_text AS hero_alt_text
+             FROM research_units ru INNER JOIN research_unit_types rut ON rut.id=ru.unit_type_id
+             LEFT JOIN departments d ON d.id=ru.department_id AND d.deleted_at IS NULL
+             LEFT JOIN media m ON m.id=ru.hero_media_id AND m.status="active" AND m.deleted_at IS NULL
+             WHERE ru.status="published" AND ru.published_at IS NOT NULL AND ru.published_at<=NOW() AND ru.deleted_at IS NULL
+             ORDER BY d.display_order IS NULL, d.display_order, d.name, ru.display_order, ru.name'
+        );
+        $groups = [];
+        foreach ($statement->fetchAll() as $row) {
+            $key = $row['department_id'] !== null ? (int) $row['department_id'] : 0;
+            if (!isset($groups[$key])) {
+                $groups[$key] = [
+                    'department' => $row['department_id'] !== null
+                        ? ['id' => (int) $row['department_id'], 'name' => $row['department_name'], 'slug' => $row['department_slug']]
+                        : ['id' => 0, 'name' => 'Other research labs', 'slug' => ''],
+                    'units' => [],
+                ];
+            }
+            $groups[$key]['units'][] = $row;
+        }
+        return array_values($groups);
+    }
+
+    /** @return list<array<string,mixed>> */
+    public function publishedByDepartment(int $departmentId): array
+    {
+        $statement = $this->connection()->prepare(
+            'SELECT ru.id,ru.name,ru.acronym,ru.slug,ru.overview,ru.research_focus,rut.name AS type_name,
+                    m.file_path AS hero_path,m.alt_text AS hero_alt_text
+             FROM research_units ru INNER JOIN research_unit_types rut ON rut.id=ru.unit_type_id
+             LEFT JOIN media m ON m.id=ru.hero_media_id AND m.status="active" AND m.deleted_at IS NULL
+             WHERE ru.department_id=:department_id AND ru.status="published" AND ru.published_at IS NOT NULL
+               AND ru.published_at<=NOW() AND ru.deleted_at IS NULL
+             ORDER BY ru.display_order, ru.name'
+        );
+        $statement->execute(['department_id' => $departmentId]);
+        return $statement->fetchAll();
+    }
+
+    /** @return list<array<string,mixed>> */
+    public function projects(int $unitId, bool $publishedOnly=false): array
+    {
+        $published=$publishedOnly?' AND p.publication_status="published" AND p.published_at IS NOT NULL AND p.published_at<=NOW()':'';
+        $statement=$this->connection()->prepare(
+            'SELECT p.id,p.title,p.short_title,p.slug,p.summary,p.project_status,pru.is_lead_unit,
+                    m.file_path AS hero_path,m.alt_text AS hero_alt_text
+             FROM project_research_units pru INNER JOIN projects p ON p.id=pru.project_id AND p.deleted_at IS NULL'.$published.'
+             LEFT JOIN media m ON m.id=p.hero_media_id AND m.status="active" AND m.deleted_at IS NULL
+             WHERE pru.research_unit_id=:id
+             ORDER BY FIELD(p.project_status,"ongoing","planned","completed","suspended","cancelled"),p.title'
+        );
+        $statement->execute(['id'=>$unitId]); return $statement->fetchAll();
+    }
+
     /** @return list<array<string,mixed>> */
     public function members(int $unitId, bool $publishedOnly=false): array
     {

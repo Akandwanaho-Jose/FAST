@@ -6,6 +6,7 @@ use FastWebsite\Core\View;
 
 $groupLabels = [
     'identity' => 'Institutional identity and external services',
+    'about' => 'About FAST pages',
     'navigation' => 'Navigation',
     'home' => 'Homepage',
     'departments' => 'Departments page',

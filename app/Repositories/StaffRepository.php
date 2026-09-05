@@ -194,6 +194,57 @@ final class StaffRepository
         return is_array($row) ? $row : null;
     }
 
+    /**
+     * Staff self-service: resolves the staff row (if any) linked to a
+     * logged-in user account, without any RBAC/department scoping.
+     */
+    public function staffIdForUser(int $userId): ?int
+    {
+        $statement = $this->connection()->prepare(
+            'SELECT id FROM staff WHERE user_id = :user_id AND deleted_at IS NULL LIMIT 1'
+        );
+        $statement->execute(['user_id' => $userId]);
+        $id = $statement->fetchColumn();
+
+        return $id === false ? null : (int) $id;
+    }
+
+    /**
+     * Staff self-service equivalent of findAdmin(): same rich single-record
+     * shape, but ownership-scoped via staff.user_id rather than department/
+     * global RBAC scope.
+     *
+     * @return array<string,mixed>|null
+     */
+    public function findOwn(int $id, int $userId): ?array
+    {
+        $statement = $this->connection()->prepare(
+            'SELECT s.*, f.name AS faculty_name,
+                    d.id AS department_id, d.name AS department_name,
+                    sp.position_id, sp.title_override,
+                    COALESCE(sp.title_override, p.name) AS position_title,
+                    l.campus, l.building, l.floor, l.room,
+                    m.file_path AS profile_path, m.alt_text AS profile_alt_text
+             FROM staff s
+             INNER JOIN faculties f ON f.id = s.faculty_id
+             LEFT JOIN staff_departments sd
+                ON sd.staff_id = s.id AND sd.is_primary = 1
+                AND (sd.end_date IS NULL OR sd.end_date >= CURDATE())
+             LEFT JOIN departments d ON d.id = sd.department_id
+             LEFT JOIN staff_positions sp ON sp.staff_id = s.id AND sp.is_current = 1
+             LEFT JOIN positions p ON p.id = sp.position_id
+             LEFT JOIN locations l ON l.id = s.office_location_id
+             LEFT JOIN media m ON m.id = s.profile_media_id
+                AND m.status = "active" AND m.deleted_at IS NULL
+             WHERE s.id = :id AND s.user_id = :user_id AND s.deleted_at IS NULL
+             GROUP BY s.id LIMIT 1'
+        );
+        $statement->execute(['id' => $id, 'user_id' => $userId]);
+        $row = $statement->fetch();
+
+        return is_array($row) ? $row : null;
+    }
+
     /** @return array<string,mixed>|null */
     public function findForUpdate(int $id): ?array
     {

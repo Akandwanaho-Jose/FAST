@@ -154,7 +154,7 @@ $currentHeroUrl = $currentHeroPath !== ''
             </div>
             <div class="form-field span-2">
                 <label for="hero_media_id">Existing hero image</label>
-                <select id="hero_media_id" name="hero_media_id">
+                <select id="hero_media_id" name="hero_media_id" data-media-upload="<?= View::escape($baseUrl) ?>admin/media">
                     <option value="">No hero image</option>
                     <?php foreach ($images as $image): ?>
                         <option value="<?= (int) $image['id'] ?>" <?= $value('hero_media_id') === (string) $image['id'] ? 'selected' : '' ?>>

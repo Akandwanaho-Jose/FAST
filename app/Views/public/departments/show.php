@@ -19,6 +19,8 @@ $mediaUrl = static function (mixed $path) use ($baseUrl): ?string {
 $heroUrl = $mediaUrl($department['hero_path']) ?? $baseUrl . 'assets/images/fast-building.png';
 $heroAlt = trim((string) ($department['hero_alt_text'] ?? '')) ?: (string) $department['name'];
 $hasDirection = array_filter([$department['vision'], $department['mission'], $department['strategic_direction']], static fn (mixed $value): bool => is_string($value) && trim($value) !== '') !== [];
+$researchLabs = $researchLabs ?? [];
+$innovations = $innovations ?? [];
 $departmentName = preg_replace('/^Department of /', '', (string) $department['name']) ?? $department['name'];
 ?>
 <header class="department-profile-hero">
@@ -39,6 +41,8 @@ $departmentName = preg_replace('/^Department of /', '', (string) $department['na
 <section class="department-fact-strip"><div class="shell">
     <div data-department-reveal><span>Programmes</span><strong><?= count($programmes) ?> published</strong></div>
     <div data-department-reveal><span>Academic community</span><strong><a href="<?= View::escape($baseUrl) ?>staff?department=<?= (int) $department['id'] ?>">View department staff</a></strong></div>
+    <?php if ($researchLabs !== []): ?><div data-department-reveal><span>Research labs</span><strong><a href="<?= View::escape($baseUrl) ?>research?department=<?= View::escape($department['slug']) ?>">View <?= count($researchLabs) ?> research labs</a></strong></div><?php endif; ?>
+    <?php if ($innovations !== []): ?><div data-department-reveal><span>Innovations</span><strong><a href="<?= View::escape($baseUrl) ?>innovations?department=<?= View::escape($department['slug']) ?>">View innovations</a></strong></div><?php endif; ?>
     <div data-department-reveal><span>Location</span><strong><?= View::escape($location !== [] ? implode(', ', array_slice($location, 0, 2)) : 'FAST, MUST') ?></strong></div>
     <div data-department-reveal><span>Contact</span><strong><?= View::escape($department['email'] ?: ($department['phone'] ?: 'Contact FAST')) ?></strong></div>
 </div></section>

@@ -40,8 +40,11 @@ final class SiteContentRepository
     /** @return list<array<string,mixed>> */public function locations():array{return$this->pdo()->query('SELECT id,campus,building,floor,room FROM locations ORDER BY campus,building,room')->fetchAll();}
     /** @return list<array<string,mixed>> */public function news(?int$u,bool$public=false,int$limit=100):array{$where=$u===null?'1=1':$this->newsScope($u,'n');if($public)$where.=' AND n.status="published" AND n.published_at IS NOT NULL AND n.published_at<=NOW()';$limit=max(1,min(100,$limit));return$this->pdo()->query('SELECT n.*,c.name AS category_name,c.slug AS category_slug,m.file_path AS media_path,m.alt_text AS media_alt_text,u.name AS author_name FROM news n INNER JOIN news_categories c ON c.id=n.category_id LEFT JOIN media m ON m.id=n.featured_media_id AND m.status="active" AND m.deleted_at IS NULL LEFT JOIN users u ON u.id=n.author_user_id WHERE n.deleted_at IS NULL AND '.$where.' ORDER BY n.is_featured DESC,n.article_date DESC,n.id DESC LIMIT '.$limit)->fetchAll();}
     /** @return array<string,mixed>|null */public function findNews(int$id,int$u):?array{$s=$this->pdo()->prepare('SELECT n.*,nd.department_id FROM news n LEFT JOIN news_departments nd ON nd.news_id=n.id WHERE n.id=:id AND n.deleted_at IS NULL AND '.$this->newsScope($u,'n').' LIMIT 1');$s->execute(['id'=>$id]);$r=$s->fetch();return is_array($r)?$r:null;}
-    /** @return array<string,mixed>|null */public function publicNews(string$slug):?array{$s=$this->pdo()->prepare('SELECT n.*,c.name AS category_name,m.file_path AS media_path,m.alt_text AS media_alt_text,u.name AS author_name FROM news n INNER JOIN news_categories c ON c.id=n.category_id LEFT JOIN media m ON m.id=n.featured_media_id AND m.status="active" AND m.deleted_at IS NULL LEFT JOIN users u ON u.id=n.author_user_id WHERE n.slug=:slug AND n.status="published" AND n.published_at IS NOT NULL AND n.published_at<=NOW() AND n.deleted_at IS NULL LIMIT 1');$s->execute(['slug'=>$slug]);$r=$s->fetch();return is_array($r)?$r:null;}
+    /** @return array<string,mixed>|null */public function publicNews(string$slug):?array{$s=$this->pdo()->prepare('SELECT n.*,c.name AS category_name,m.file_path AS media_path,m.alt_text AS media_alt_text,u.name AS author_name,st.slug AS author_staff_slug,st.honorific_title AS author_honorific_title,st.first_name AS author_first_name,st.last_name AS author_last_name,sm.file_path AS author_photo_path FROM news n INNER JOIN news_categories c ON c.id=n.category_id LEFT JOIN media m ON m.id=n.featured_media_id AND m.status="active" AND m.deleted_at IS NULL LEFT JOIN users u ON u.id=n.author_user_id LEFT JOIN staff st ON st.user_id=n.author_user_id AND st.status="published" AND st.deleted_at IS NULL LEFT JOIN media sm ON sm.id=st.profile_media_id AND sm.status="active" AND sm.deleted_at IS NULL WHERE n.slug=:slug AND n.status="published" AND n.published_at IS NOT NULL AND n.published_at<=NOW() AND n.deleted_at IS NULL LIMIT 1');$s->execute(['slug'=>$slug]);$r=$s->fetch();return is_array($r)?$r:null;}
     /** @param array<string,mixed>$data */public function saveNews(?int$id,array$data,?int$department):int{$id=$this->save('news',$id,$data,true);$this->pdo()->prepare('DELETE FROM news_departments WHERE news_id=:id')->execute(['id'=>$id]);if($department!==null)$this->pdo()->prepare('INSERT INTO news_departments(news_id,department_id)VALUES(:news,:department)')->execute(['news'=>$id,'department'=>$department]);return$id;}
+    /** @return list<array<string,mixed>> */public function newsGallery(int$newsId):array{$s=$this->pdo()->prepare('SELECT m.id,m.file_path,m.alt_text FROM news_media nm INNER JOIN media m ON m.id=nm.media_id AND m.status="active" AND m.deleted_at IS NULL WHERE nm.news_id=:news_id ORDER BY nm.display_order,nm.id');$s->execute(['news_id'=>$newsId]);return$s->fetchAll();}
+    public function addNewsGalleryPhoto(int$newsId,int$mediaId):void{$o=$this->pdo()->prepare('SELECT COALESCE(MAX(display_order),-1)+1 FROM news_media WHERE news_id=:id');$o->execute(['id'=>$newsId]);$order=(int)$o->fetchColumn();$this->pdo()->prepare('INSERT INTO news_media(news_id,media_id,display_order)VALUES(:news,:media,:order)')->execute(['news'=>$newsId,'media'=>$mediaId,'order'=>$order]);}
+    public function removeNewsGalleryPhoto(int$newsId,int$mediaId):bool{$s=$this->pdo()->prepare('DELETE FROM news_media WHERE news_id=:news AND media_id=:media');$s->execute(['news'=>$newsId,'media'=>$mediaId]);return$s->rowCount()===1;}
     public function newsStatus(int$id,string$status):void{$this->status('news',$id,$status);}
     /** @return list<array<string,mixed>> */public function events(?int$u,bool$public=false,int$limit=100):array{$where=$u===null?'1=1':$this->eventScope($u,'e');if($public)$where.=' AND e.status="published" AND e.published_at IS NOT NULL AND e.published_at<=NOW()';$limit=max(1,min(100,$limit));return$this->pdo()->query('SELECT e.*,c.name AS category_name,l.campus,l.building,l.room,m.file_path AS media_path,m.alt_text AS media_alt_text FROM events e INNER JOIN event_categories c ON c.id=e.category_id LEFT JOIN locations l ON l.id=e.location_id LEFT JOIN media m ON m.id=e.featured_media_id AND m.status="active" AND m.deleted_at IS NULL WHERE '.$where.' ORDER BY e.starts_at ASC LIMIT '.$limit)->fetchAll();}
     /** @return array<string,mixed>|null */public function findEvent(int$id,int$u):?array{$s=$this->pdo()->prepare('SELECT e.*,ed.department_id FROM events e LEFT JOIN event_departments ed ON ed.event_id=e.id AND ed.is_lead_organiser=1 WHERE e.id=:id AND '.$this->eventScope($u,'e').' LIMIT 1');$s->execute(['id'=>$id]);$r=$s->fetch();return is_array($r)?$r:null;}
@@ -67,14 +70,54 @@ final class SiteContentRepository
         )->fetchAll();
     }
     /** @param array<string,mixed>$data */public function savePage(?int$id,array$data):int{return$this->save('pages',$id,$data,true);}public function pageStatus(int$id,string$status):void{$this->status('pages',$id,$status);}
-    /** @return list<array<string,mixed>> */public function sections(int$page,bool$visible=false):array{$extra=$visible?' AND is_visible=1':'';$s=$this->pdo()->prepare('SELECT ps.*,m.file_path AS media_path,m.alt_text AS media_alt_text FROM page_sections ps LEFT JOIN media m ON m.id=ps.media_id AND m.status="active" AND m.deleted_at IS NULL WHERE ps.page_id=:id'.$extra.' ORDER BY ps.display_order,ps.id');$s->execute(['id'=>$page]);return$s->fetchAll();}
+    /**
+     * Each section can optionally carry a couple of "additional photos"
+     * (stored as {"extra_media_ids":[...]} in settings_json) that stack
+     * beside its main image on the public page so the photo column can grow
+     * to match a long paragraph next to it, instead of one image floating in
+     * leftover white space - see app/Views/public/content/page.php.
+     *
+     * @return list<array<string,mixed>>
+     */
+    public function sections(int$page,bool$visible=false):array{
+        $extra=$visible?' AND is_visible=1':'';
+        $s=$this->pdo()->prepare('SELECT ps.*,m.file_path AS media_path,m.alt_text AS media_alt_text FROM page_sections ps LEFT JOIN media m ON m.id=ps.media_id AND m.status="active" AND m.deleted_at IS NULL WHERE ps.page_id=:id'.$extra.' ORDER BY ps.display_order,ps.id');
+        $s->execute(['id'=>$page]);
+        $rows=$s->fetchAll();
+
+        $extraIds=[];
+        foreach($rows as$row)foreach($this->extraMediaIds($row['settings_json']??null) as$id)$extraIds[$id]=$id;
+        $extraMedia=[];
+        if($extraIds!==[]){
+            $placeholders=implode(',',array_fill(0,count($extraIds),'?'));
+            $stmt=$this->pdo()->prepare('SELECT id,file_path,alt_text FROM media WHERE status="active" AND deleted_at IS NULL AND id IN ('.$placeholders.')');
+            $stmt->execute(array_values($extraIds));
+            foreach($stmt->fetchAll() as$media)$extraMedia[(int)$media['id']]=$media;
+        }
+
+        foreach($rows as&$row){
+            $row['extra_photos']=[];
+            foreach($this->extraMediaIds($row['settings_json']??null) as$id){
+                if(!isset($extraMedia[$id]))continue;
+                $row['extra_photos'][]=['id'=>$id,'media_path'=>$extraMedia[$id]['file_path'],'media_alt_text'=>$extraMedia[$id]['alt_text']];
+            }
+        }
+        unset($row);
+
+        return$rows;
+    }
+
+    /** @return list<int> */
+    private function extraMediaIds(?string$settingsJson):array{
+        if($settingsJson===null||$settingsJson==='')return[];
+        $decoded=json_decode($settingsJson,true);
+        if(!is_array($decoded)||!isset($decoded['extra_media_ids'])||!is_array($decoded['extra_media_ids']))return[];
+        return array_values(array_filter(array_map('intval',$decoded['extra_media_ids']),static fn(int$id):bool=>$id>0));
+    }
     /** @param array<string,mixed>$data */public function addSection(int$page,array$data):int{$data=['page_id'=>$page,...$data];return$this->save('page_sections',null,$data,false);}
     /** @return array<string,mixed>|null */public function findSection(int$page,int$id):?array{$s=$this->pdo()->prepare('SELECT * FROM page_sections WHERE id=:id AND page_id=:page LIMIT 1');$s->execute(['id'=>$id,'page'=>$page]);$r=$s->fetch();return is_array($r)?$r:null;}
     /** @param array<string,mixed>$data */public function updateSection(int$page,int$id,array$data):bool{$sets=array_map(static fn(string$field):string=>$field.'=:'.$field,array_keys($data));$s=$this->pdo()->prepare('UPDATE page_sections SET '.implode(',',$sets).' WHERE id=:id AND page_id=:page');$s->execute([...$data,'id'=>$id,'page'=>$page]);return$s->rowCount()<=1;}
     public function removeSection(int$page,int$id):bool{$s=$this->pdo()->prepare('DELETE FROM page_sections WHERE id=:id AND page_id=:page');$s->execute(['id'=>$id,'page'=>$page]);return$s->rowCount()===1;}
-    /** @return list<array<string,mixed>> */public function announcements(bool$public=false):array{$where=$public?'status="published" AND published_at IS NOT NULL AND published_at<=NOW() AND (starts_at IS NULL OR starts_at<=NOW()) AND (ends_at IS NULL OR ends_at>=NOW())':'1=1';return$this->pdo()->query('SELECT * FROM announcements WHERE '.$where.' ORDER BY is_pinned DESC,created_at DESC')->fetchAll();}
-    /** @return array<string,mixed>|null */public function findAnnouncement(int$id):?array{$s=$this->pdo()->prepare('SELECT * FROM announcements WHERE id=:id LIMIT 1');$s->execute(['id'=>$id]);$r=$s->fetch();return is_array($r)?$r:null;}
-    /** @param array<string,mixed>$data */public function saveAnnouncement(?int$id,array$data):int{return$this->save('announcements',$id,$data,true);}public function announcementStatus(int$id,string$status):void{$this->status('announcements',$id,$status);}
     public function slugExists(string$table,string$slug,?int$id=null):bool{if(!in_array($table,['news','events','pages'],true))return true;$sql='SELECT 1 FROM '.$table.' WHERE slug=:slug';$params=['slug'=>$slug];if($id!==null){$sql.=' AND id<>:id';$params['id']=$id;}$s=$this->pdo()->prepare($sql.' LIMIT 1');$s->execute($params);return$s->fetchColumn()!==false;}
     public function relation(string$table,int$id):bool{if(!in_array($table,['news_categories','event_categories','departments','media','staff','locations','pages'],true))return false;$extra=match($table){'departments','media','staff','pages'=>' AND deleted_at IS NULL',default=>''};$s=$this->pdo()->prepare("SELECT 1 FROM $table WHERE id=:id$extra LIMIT 1");$s->execute(['id'=>$id]);return$s->fetchColumn()!==false;}public function canDepartment(int$u,?int$d):bool{return$d===null?$this->scope->hasGlobalScope($u):($this->scope->hasGlobalScope($u)||in_array($d,$this->scope->departmentIds($u),true));}public function global(int$u):bool{return$this->scope->hasGlobalScope($u);}public function pdo():PDO{return$this->db->connection();}
     /** @param array<string,mixed>$data */private function save(string$table,?int$id,array$data,bool$status):int{if($id===null){$fields=array_keys($data);$suf=$status?',status':'';$val=$status?',"draft"':'';$s=$this->pdo()->prepare(sprintf('INSERT INTO %s(%s%s)VALUES(%s%s)',$table,implode(',',$fields),$suf,implode(',',array_map(static fn(string$f):string=>':'.$f,$fields)),$val));$s->execute($data);return(int)$this->pdo()->lastInsertId();}$sets=array_map(static fn(string$f):string=>$f.'=:'.$f,array_keys($data));$s=$this->pdo()->prepare('UPDATE '.$table.' SET '.implode(',',$sets).' WHERE id=:id');$s->execute([...$data,'id'=>$id]);return$id;}private function status(string$table,int$id,string$status):void{$published=$status==='published'?',published_at=NOW()':($status==='draft'?',published_at=NULL':'');$s=$this->pdo()->prepare('UPDATE '.$table.' SET status=:status'.$published.' WHERE id=:id');$s->execute(['status'=>$status,'id'=>$id]);}

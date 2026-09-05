@@ -42,7 +42,7 @@ return static function (): void {
         'about/deans-message',
         'about/vision-and-mission',
         'about/core-values',
-        '>Research &amp; Innovation<',
+        '>Research Labs<',
         '>Programmes<',
         'assets/images/must-logo.webp',
         'programmes?category=undergraduate',

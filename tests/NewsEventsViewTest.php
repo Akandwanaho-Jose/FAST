@@ -15,10 +15,6 @@ return static function (): void {
     ];
     $newsIndex = $view->render('public/content/news-index', [
         'baseUrl' => '/fast/public/', 'siteContent' => [], 'items' => [$news],
-        'announcements' => [[
-            'title' => 'Scholarship call', 'summary' => 'Applications are open.',
-            'announcement_type' => 'scholarship', 'link_url' => '/scholarships',
-        ]],
     ], null);
     $newsShow = $view->render('public/content/news-show', [
         'baseUrl' => '/fast/public/', 'item' => $news, 'related' => [],
@@ -43,8 +39,8 @@ return static function (): void {
     ], null);
 
     foreach ([
-        [$newsIndex, ['newsroom-feature', 'FAST research story', 'Scholarship call', 'announcement-rail']],
-        [$newsShow, ['editorial-masthead', 'Story details', 'Full story body.']],
+        [$newsIndex, ['newsroom-feature', 'FAST research story']],
+        [$newsShow, ['editorial-masthead', 'editorial-author-section', 'Full story body.']],
         [$eventsIndex, ['event-feature', 'Next at FAST', 'FAST Main Hall']],
         [$eventShow, ['event-detail-masthead', 'Event information', 'Register for this event']],
     ] as [$html, $fragments]) {

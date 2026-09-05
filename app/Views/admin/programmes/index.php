@@ -1,6 +1,12 @@
 <?php
 declare(strict_types=1);
 use FastWebsite\Core\View;
+$queryForPage = static function (int $page) use ($search, $statusFilter): string {
+    return http_build_query(array_filter(
+        ['q' => $search, 'status' => $statusFilter, 'page' => $page],
+        static fn (mixed $value): bool => $value !== ''
+    ));
+};
 ?>
 <section class="admin-page-heading">
     <div><p class="eyebrow">Phase 6</p><h1>Academic programmes</h1><p>Manage programme information, ownership, images, and publication.</p></div>
@@ -23,3 +29,10 @@ use FastWebsite\Core\View;
         <td><a class="button button-secondary button-compact" href="<?= View::escape($baseUrl) ?>admin/programmes/<?= (int) $programme['id'] ?>">Open</a></td>
     </tr><?php endforeach; ?></tbody></table></div><?php endif; ?>
 </section>
+<?php if ($result['pages'] > 1): ?>
+    <nav class="pagination" aria-label="Programme pages">
+        <?php for ($page = 1; $page <= $result['pages']; $page++): ?>
+            <a href="<?= View::escape($baseUrl . 'admin/programmes?' . $queryForPage($page)) ?>" <?= $page === $result['page'] ? 'aria-current="page"' : '' ?>><?= $page ?></a>
+        <?php endfor; ?>
+    </nav>
+<?php endif; ?>

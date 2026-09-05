@@ -41,7 +41,6 @@ final class SiteContentPublicController extends Controller
     {
         return $this->public($q, 'public/content/news-index', 'News & Announcements', [
             'items' => $this->r->news(null, true),
-            'announcements' => $this->r->announcements(true),
         ]);
     }
 

@@ -7,9 +7,9 @@ use FastWebsite\Core\View;
 <section class="auth-section">
     <div class="auth-card">
         <div class="auth-heading">
-            <p class="eyebrow">Secure administration</p>
+            <p class="eyebrow">Staff &amp; administration sign in</p>
             <h1>Sign in to FAST</h1>
-            <p>Use your authorised website administration account.</p>
+            <p>Use your FAST staff or administration account to continue.</p>
         </div>
 
         <?php if (is_string($error) && $error !== ''): ?>
@@ -43,6 +43,14 @@ use FastWebsite\Core\View;
             </div>
             <button class="button button-primary button-full" type="submit">Sign in</button>
         </form>
+
+        <div class="auth-alt-action">
+            <p>New to FAST, or don't have a password yet?</p>
+            <a class="button button-secondary button-full" href="<?= View::escape($baseUrl) ?>password/forgot">
+                Set up or reset your password
+            </a>
+        </div>
+
         <p class="auth-note">
             Repeated unsuccessful attempts are temporarily limited and recorded.
         </p>

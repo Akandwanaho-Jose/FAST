@@ -75,6 +75,8 @@ final class ProjectAdminController extends Controller
             'canEdit'=>($project['publication_status'] === 'draft' && $this->authorization->can((int) $user['id'], 'research.edit')) || ($project['publication_status'] === 'published' && $canPublish),
             'canManageMembers'=>$this->authorization->can((int) $user['id'], 'research.edit'),
             'canManageMetadata'=>$this->authorization->can((int) $user['id'], 'research.edit'),
+            'milestones'=>$this->projects->milestones($id),
+            'nextMilestoneSequence'=>$this->projects->nextMilestoneSequence($id),
             'themes'=>$this->metadata->projectThemes($id),
             'sdgLinks'=>$this->metadata->projectSdgs($id),
             'partnerLinks'=>$this->metadata->projectPartners($id),
@@ -134,6 +136,51 @@ final class ProjectAdminController extends Controller
         return Response::redirect($request->baseUrl().'admin/research/projects/'.$id.'#team');
     }
 
+    public function addMilestone(Request $request): Response
+    {
+        $this->csrf($request); $user=$this->user(); $id=$this->id($request);
+        $lead=trim((string)$request->input('lead_staff_id','')); $leadStaffId=ctype_digit($lead)&&(int)$lead>0?(int)$lead:null;
+        $seqInput=trim((string)$request->input('sequence_number','')); $sequence=ctype_digit($seqInput)?(int)$seqInput:null;
+        $levels=array_map('strval',array_filter($request->arrayInput('target_level'),'is_string'));
+        $this->service->addMilestone($id,(string)$request->input('title',''),(string)$request->input('expected_output',''),(string)$request->input('timeline_text',''),$levels,(string)$request->input('lead_name_text',''),$leadStaffId,(string)$request->input('student_names_text',''),(string)$request->input('status','planned'),$sequence,(int)$user['id'],$request->ipAddress(),$request->userAgent());
+        $this->session->put('_flash_success','Milestone added.');
+        return Response::redirect($request->baseUrl().'admin/research/projects/'.$id.'#roadmap');
+    }
+
+    public function editMilestone(Request $request): Response
+    {
+        $user=$this->user(); $this->assert((int)$user['id'],'research.edit'); $id=$this->id($request); $milestoneId=$this->milestoneId($request);
+        $project=$this->projects->findAdmin($id,(int)$user['id']);
+        if($project===null)throw new HttpException(404,'Project not found.');
+        $milestone=$this->projects->findMilestone($id,$milestoneId);
+        if($milestone===null)throw new HttpException(404,'Project milestone not found.');
+        return $this->adminView($request,$user,'admin/projects/milestone-form',[
+            'pageTitle'=>'Edit milestone',
+            'project'=>$project,
+            'milestone'=>$milestone,
+            'staffOptions'=>$this->projects->availableStaff((int)$user['id']),
+        ]);
+    }
+
+    public function updateMilestone(Request $request): Response
+    {
+        $this->csrf($request); $user=$this->user(); $this->assert((int)$user['id'],'research.edit'); $id=$this->id($request); $milestoneId=$this->milestoneId($request);
+        $lead=trim((string)$request->input('lead_staff_id','')); $leadStaffId=ctype_digit($lead)&&(int)$lead>0?(int)$lead:null;
+        $seqInput=trim((string)$request->input('sequence_number','0')); $sequence=ctype_digit($seqInput)?(int)$seqInput:0;
+        $levels=array_map('strval',array_filter($request->arrayInput('target_level'),'is_string'));
+        $this->service->updateMilestone($id,$milestoneId,(string)$request->input('title',''),(string)$request->input('expected_output',''),(string)$request->input('timeline_text',''),$levels,(string)$request->input('lead_name_text',''),$leadStaffId,(string)$request->input('student_names_text',''),(string)$request->input('status','planned'),$sequence,(int)$user['id'],$request->ipAddress(),$request->userAgent());
+        $this->session->put('_flash_success','Milestone updated.');
+        return Response::redirect($request->baseUrl().'admin/research/projects/'.$id.'#roadmap');
+    }
+
+    public function removeMilestone(Request $request): Response
+    {
+        $this->csrf($request); $user=$this->user(); $id=$this->id($request); $milestoneId=$this->milestoneId($request);
+        $this->service->removeMilestone($id,$milestoneId,(int)$user['id'],$request->ipAddress(),$request->userAgent());
+        $this->session->put('_flash_success','Milestone removed.');
+        return Response::redirect($request->baseUrl().'admin/research/projects/'.$id.'#roadmap');
+    }
+
     /** @param array<string,mixed> $user */
     private function save(Request $request,array $user,?int $id=null): Response
     {
@@ -175,6 +222,7 @@ final class ProjectAdminController extends Controller
     private function adminView(Request $request,array $user,string $template,array $data): Response{return $this->view($template,array_merge($this->context->data($request,$user),$data),200,'layouts/admin')->withHeader('Cache-Control','no-store');}
     private function user(): array{return $this->auth->user()??throw new HttpException(403,'Authentication required.');}
     private function id(Request $request): int{$value=(string)$request->route('id','');if(!ctype_digit($value)||(int)$value<1)throw new HttpException(404,'Project not found.');return(int)$value;}
+    private function milestoneId(Request $request): int{$value=(string)$request->route('milestoneId','');if(!ctype_digit($value)||(int)$value<1)throw new HttpException(404,'Project milestone not found.');return(int)$value;}
     private function assert(int $userId,string $permission): void{if(!$this->authorization->can($userId,$permission))throw new HttpException(403,'This project action is not allowed.');}
     private function csrf(Request $request): void{if(!$this->csrf->validate($request->input('_token')))throw new HttpException(403,'The secure form session expired.');}
 

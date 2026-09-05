@@ -46,7 +46,7 @@ if ($quickLinks === []) {
         ['label' => 'Postgraduate programmes', 'description' => 'Discover advanced study pathways.', 'link_url' => '/programmes?category=postgraduate'],
         ['label' => 'Departments', 'description' => 'Find your engineering discipline.', 'link_url' => '/departments'],
         ['label' => 'Partnerships', 'description' => 'Connect through collaboration, outreach and shared impact.', 'link_url' => '/engagement'],
-        ['label' => 'Research & Innovation', 'description' => 'Explore research projects, publications and practical innovations.', 'link_url' => '/research'],
+        ['label' => 'Research Labs', 'description' => 'Explore research projects, publications and practical innovations.', 'link_url' => '/research'],
     ];
 }
 
@@ -64,7 +64,7 @@ $slideCount = count($heroSlides);
 $heroInterval = max(7, min(20, (int) View::setting($settings, 'home.hero_interval_seconds', '10')));
 $featuredInnovation = $innovations[0] ?? null;
 $featuredImpact = $impacts[0] ?? null;
-$hasUpdates = $news !== [] || $events !== [] || $announcements !== [];
+$hasUpdates = $news !== [] || $events !== [];
 ?>
 
 <section class="home-hero-stage">
@@ -201,7 +201,7 @@ $hasUpdates = $news !== [] || $events !== [] || $announcements !== [];
                 <p class="home-why-audience-line"><?= View::escape(View::setting($settings, 'home.why_audience_line', 'For students, researchers, industry and development partners.')) ?></p>
             </header>
             <div class="home-why-bento">
-                <article class="home-why-brand-card"><span class="home-why-brand-mark" aria-hidden="true">FAST</span><p class="eyebrow"><?= View::escape(View::setting($settings, 'home.why_signature', 'Education · Research · Partnership')) ?></p><p class="home-why-brand-message"><?php foreach ($whyBrandLines as $brandLine): ?><span><?= View::escape($brandLine) ?></span><?php endforeach; ?></p><div class="home-why-audience-links"><a href="<?= View::escape($baseUrl) ?>programmes"><?= View::escape(View::setting($settings, 'home.why_student_cta', 'Explore programmes →')) ?></a><a href="<?= View::escape($baseUrl) ?>engagement"><?= View::escape(View::setting($settings, 'home.why_partner_cta', 'Partner with FAST →')) ?></a></div></article>
+                <article class="home-why-brand-card"><span class="home-why-brand-mark" aria-hidden="true">FAST</span><p class="eyebrow"><?= View::escape(View::setting($settings, 'home.why_signature', 'Education · Research · Partnership')) ?></p><p class="home-why-brand-message"><?php foreach ($whyBrandLines as $brandLine): ?><span><?= View::escape($brandLine) ?></span><?php endforeach; ?></p><div class="home-why-audience-links"><a href="<?= View::escape($baseUrl) ?>programmes"><?= View::escape(View::setting($settings, 'home.why_student_cta', 'Explore programmes →')) ?></a><?php if ($navAvailability['engagement'] ?? true): ?><a href="<?= View::escape($baseUrl) ?>engagement"><?= View::escape(View::setting($settings, 'home.why_partner_cta', 'Partner with FAST →')) ?></a><?php endif; ?></div></article>
                 <div class="home-why-visuals" data-why-gallery><?php foreach ($whyImages as $whyIndex => $whyImage): ?><figure data-why-gallery-item<?= $whyIndex < 3 ? ' data-slot="' . ($whyIndex + 1) . '"' : ' hidden' ?>><img src="<?= View::escape($whyImage) ?>" alt="" loading="lazy"></figure><?php endforeach; ?></div>
                 <article class="home-why-history-card">
                     <p class="eyebrow"><?= View::escape(View::setting($settings, 'home.why_history_eyebrow', 'Our story')) ?></p>
@@ -245,7 +245,6 @@ $hasUpdates = $news !== [] || $events !== [] || $announcements !== [];
             <div class="section-heading-row home-section-heading"><div><p class="eyebrow"><?= View::escape(View::setting($settings, 'home.updates_eyebrow', 'Stay informed')) ?></p><h2><?= View::escape($heading) ?></h2><?php if ($introduction !== ''): ?><p class="lead"><?= View::escape($introduction) ?></p><?php endif; ?></div><a class="text-link" href="<?= View::escape($baseUrl) ?>news">All news →</a></div>
             <div class="home-information-grid">
                 <?php if ($news !== []): ?><div class="home-news-panel"><h3><?= View::escape(View::setting($settings, 'home.updates_news_title', 'Latest news')) ?></h3><?php foreach ($news as $item): ?><article><?php $newsImage = $mediaUrl($item['media_path'] ?? null); ?><?php if ($newsImage): ?><img src="<?= View::escape($newsImage) ?>" alt="<?= View::escape($item['media_alt_text'] ?? '') ?>" loading="lazy"><?php endif; ?><div><p class="eyebrow"><?= View::escape($item['category_name']) ?> · <?= View::escape(date('j M Y', strtotime($item['article_date']))) ?></p><h4><a href="<?= View::escape($baseUrl) ?>news/<?= View::escape($item['slug']) ?>"><?= View::escape($item['title']) ?></a></h4></div></article><?php endforeach; ?></div><?php endif; ?>
-                <?php if ($announcements !== []): ?><div class="home-notice-panel"><h3><?= View::escape(View::setting($settings, 'home.updates_notices_title', 'Notice board')) ?></h3><?php foreach (array_slice($announcements, 0, 4) as $notice): ?><article><p class="eyebrow"><?= View::escape($notice['announcement_type']) ?></p><h4><?= View::escape($notice['title']) ?></h4><?php if ($notice['link_url']): ?><a href="<?= View::escape($actionUrl($notice['link_url'])) ?>">View notice →</a><?php endif; ?></article><?php endforeach; ?></div><?php endif; ?>
                 <?php if ($events !== []): ?><div class="home-events-panel"><h3><?= View::escape(View::setting($settings, 'home.updates_events_title', 'Upcoming events')) ?></h3><?php foreach ($events as $event): ?><article><time datetime="<?= View::escape(date('Y-m-d', strtotime($event['starts_at']))) ?>"><strong><?= View::escape(date('d', strtotime($event['starts_at']))) ?></strong><span><?= View::escape(date('M', strtotime($event['starts_at']))) ?></span></time><div><p class="eyebrow"><?= View::escape($event['category_name']) ?></p><h4><a href="<?= View::escape($baseUrl) ?>events/<?= View::escape($event['slug']) ?>"><?= View::escape($event['title']) ?></a></h4></div></article><?php endforeach; ?><a class="text-link" href="<?= View::escape($baseUrl) ?>events">All events →</a></div><?php endif; ?>
             </div>
         </div></section>

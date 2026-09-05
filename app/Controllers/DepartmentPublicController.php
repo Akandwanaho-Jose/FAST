@@ -9,12 +9,16 @@ use FastWebsite\Core\HttpException;
 use FastWebsite\Core\Request;
 use FastWebsite\Core\Response;
 use FastWebsite\Repositories\DepartmentRepository;
+use FastWebsite\Repositories\ResearchRepository;
+use FastWebsite\Repositories\InnovationRepository;
 
 final class DepartmentPublicController extends Controller
 {
     public function __construct(
         \FastWebsite\Core\View $view,
-        private readonly DepartmentRepository $departments
+        private readonly DepartmentRepository $departments,
+        private readonly ResearchRepository $research,
+        private readonly InnovationRepository $innovations
     ) {
         parent::__construct($view);
     }
@@ -69,6 +73,12 @@ final class DepartmentPublicController extends Controller
                 'baseUrl' => $request->baseUrl(),
                 'department' => $department,
                 'programmes' => $this->departments->publishedProgrammes(
+                    (int) $department['id']
+                ),
+                'researchLabs' => $this->research->publishedByDepartment(
+                    (int) $department['id']
+                ),
+                'innovations' => $this->innovations->publishedByDepartment(
                     (int) $department['id']
                 ),
             ]

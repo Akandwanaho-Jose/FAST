@@ -29,7 +29,7 @@ final class HomeController extends Controller
                 'metaDescription' => 'Explore programmes, people, research, innovation, news, and events at FAST.',
                 'currentPath' => $request->path(),
                 'baseUrl' => $request->baseUrl(),
-                'faculty'=>$this->home->faculty(),'slides'=>$this->home->slides(),'counts'=>$this->home->counts(),'programmeCategoryCounts'=>$this->home->programmeCategoryCounts(),'departments'=>$this->home->featuredDepartments(),'programmes'=>$this->home->featuredProgrammes(),'sections'=>$this->home->sections(),'quickLinks'=>$this->home->quickLinks(),'historyPage'=>$historyPage,'historySections'=>$historySections,'announcements'=>$this->content->announcements(true),'news'=>$this->content->news(null,true,3),'events'=>$this->content->events(null,true,3),'innovations'=>$this->innovation->innovations(null,true),'impacts'=>$this->engagement->impacts(null,true),
+                'faculty'=>$this->home->faculty(),'slides'=>$this->home->slides(),'counts'=>$this->home->counts(),'programmeCategoryCounts'=>$this->home->programmeCategoryCounts(),'departments'=>$this->home->featuredDepartments(),'programmes'=>$this->home->featuredProgrammes(),'sections'=>$this->home->sections(),'quickLinks'=>$this->home->quickLinks(),'historyPage'=>$historyPage,'historySections'=>$historySections,'news'=>$this->content->news(null,true,3),'events'=>$this->content->events(null,true,3),'innovations'=>$this->innovation->innovations(null,true),'impacts'=>$this->engagement->impacts(null,true),
             ]
         );
     }

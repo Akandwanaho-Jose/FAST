@@ -59,6 +59,7 @@ final class ProjectPublicController extends Controller
             'themes'=>$this->metadata->projectThemes((int) $project['id'], true),
             'sdgs'=>$this->metadata->projectSdgs((int) $project['id']),
             'partners'=>$this->metadata->projectPartners((int) $project['id'], true),
+            'milestones'=>$this->projects->milestones((int) $project['id']),
         ]);
     }
 }

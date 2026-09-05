@@ -82,7 +82,7 @@ if ((int) $connection->query('SELECT COUNT(*) FROM homepage_quick_links')->fetch
         ['Postgraduate programmes', 'Discover advanced study and research pathways.', '/programmes?category=postgraduate', 20, 1],
         ['Departments', 'Find your engineering and applied science discipline.', '/departments', 30, 1],
         ['Partnerships', 'Connect with FAST through collaboration, outreach and shared impact.', '/engagement', 40, 1],
-        ['Research & Innovation', 'Explore research projects, publications and practical innovations.', '/research', 50, 1],
+        ['Research Labs', 'Explore research projects, publications and practical innovations.', '/research', 50, 1],
     ];
     $insertLink = $connection->prepare(
         'INSERT INTO homepage_quick_links
@@ -98,6 +98,6 @@ $replaceQuickLink = $connection->prepare(
     'UPDATE homepage_quick_links SET label = ?, description = ?, link_url = ? WHERE label = ?'
 );
 $replaceQuickLink->execute(['Partnerships', 'Connect with FAST through collaboration, outreach and shared impact.', '/engagement', 'Apply for admission']);
-$replaceQuickLink->execute(['Research & Innovation', 'Explore research projects, publications and practical innovations.', '/research', 'Student resources']);
+$replaceQuickLink->execute(['Research Labs', 'Explore research projects, publications and practical innovations.', '/research', 'Student resources']);
 
 fwrite(STDOUT, "Homepage section settings are ready.\n");

@@ -921,11 +921,13 @@ CREATE TABLE `project_members` (
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     KEY `idx_project_members_project` (`project_id`, `display_order`),
-    KEY `idx_project_members_staff` (`staff_id`),
-    -- docs/RESEARCH.md: "tightening the database's non-exclusive identity
-    -- check" implies the DB-level check is weaker (at-least-one) than the
-    -- service-level rule (exactly-one) -- inferred check, weaker form only
-    CONSTRAINT `chk_project_members_identity` CHECK (`staff_id` IS NOT NULL OR `external_member_name` IS NOT NULL)
+    KEY `idx_project_members_staff` (`staff_id`)
+    -- The "at least one of staff_id / external_member_name" rule from
+    -- docs/RESEARCH.md is enforced in ProjectService instead of as a DB
+    -- CHECK constraint: staff_id also carries an ON DELETE SET NULL foreign
+    -- key below, and MySQL disallows a CHECK constraint on a column that
+    -- also has a SET NULL referential action (a cascading delete could
+    -- otherwise violate the check) -- confirmed by ERROR 1901 on import.
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `project_research_units` (
@@ -1031,10 +1033,11 @@ CREATE TABLE `publication_authors` (
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     KEY `idx_publication_authors_publication_order` (`publication_id`, `author_order`),
-    KEY `idx_publication_authors_staff` (`staff_id`),
-    -- docs/RESEARCH.md: same non-exclusive-identity pattern as project_members
-    -- -- inferred check, weaker form only
-    CONSTRAINT `chk_publication_authors_identity` CHECK (`staff_id` IS NOT NULL OR `external_author_name` IS NOT NULL)
+    KEY `idx_publication_authors_staff` (`staff_id`)
+    -- Same non-exclusive-identity pattern as project_members, and the same
+    -- reason it's not a DB CHECK constraint here either -- see the comment
+    -- on project_members above (ERROR 1901: CHECK + ON DELETE SET NULL on
+    -- the same column is rejected by MySQL).
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `publication_projects` (
